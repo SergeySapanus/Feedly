@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Contracts;
+using LoggerService;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MyFeedlyServer.Extensions
@@ -23,8 +25,13 @@ namespace MyFeedlyServer.Extensions
         {
             services.Configure<IISOptions>(options =>
             {
-                options.AuthenticationDisplayName = "Wellcome!";
+
             });
+        }
+
+        public static void ConfigureLoggerService(this IServiceCollection services)
+        {
+            services.AddSingleton<ILoggerManager, LoggerManager>();
         }
     }
 }
