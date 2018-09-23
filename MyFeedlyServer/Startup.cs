@@ -25,8 +25,10 @@ namespace MyFeedlyServer
         {
             services.ConfigureCors();
             services.ConfigureIISIntegration();
-            services.AddMvc();
             services.ConfigureLoggerService();
+            services.ConfigureMsSqlContext(Configuration);
+            services.ConfigureRepositoryWrapper();
+            services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

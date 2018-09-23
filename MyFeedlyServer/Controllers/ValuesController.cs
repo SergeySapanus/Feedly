@@ -3,30 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
+using Entities;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace MyFeedlyServer.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private readonly IRepositoryWrapper _repoWrapper;
         private readonly ILoggerManager _logger;
 
-        public ValuesController(ILoggerManager logger)
+        public ValuesController(IRepositoryWrapper repoWrapper, ILoggerManager logger)
         {
+            _repoWrapper = repoWrapper;
             _logger = logger;
         }
 
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            _logger.LogInfo("Here is info message from our values controller.");
-            _logger.LogDebug("Here is debug message from our values controller.");
-            _logger.LogWarn("Here is warn message from our values controller.");
-            _logger.LogError("Here is error message from our values controller.");
+            var domesticCollections = _repoWrapper.Collection.FindByCondition(x => x.User.Name.Equals("Domestic"));
 
-            return new[] { "value1", "value2" };
+            var collectionNames = domesticCollections as Collection[] ?? domesticCollections.ToArray();
+            if (collectionNames.Any())
+                return collectionNames.Select(c => c.Name);
+
+            var users = _repoWrapper.User.FindAll();
+
+            var userNames = users as User[] ?? users.ToArray();
+            if (userNames.Any())
+                return userNames.Select(u => u.Name);
+
+            return new[] { "Empty" };
         }
+
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    _logger.LogInfo("Here is info message from our values controller.");
+        //    _logger.LogDebug("Here is debug message from our values controller.");
+        //    _logger.LogWarn("Here is warn message from our values controller.");
+        //    _logger.LogError("Here is error message from our values controller.");
+
+        //    return new[] { "value1", "value2" };
+        //}
 
         //// GET api/values
         //[HttpGet]
