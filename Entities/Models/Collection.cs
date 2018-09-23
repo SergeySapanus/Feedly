@@ -14,10 +14,8 @@ namespace Entities.Models
         [StringLength(50, ErrorMessage = nameof(Name) + " can't be longer than 50 characters")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = nameof(Models.User) + " is required")]
+        [Required(ErrorMessage = nameof(User) + " is required")]
         public User User { get; set; }
-
-        public int UserId { get; set; }
 
         public ICollection<CollectionFeed> CollectionsFeeds { get; set; } = new HashSet<CollectionFeed>();
     }

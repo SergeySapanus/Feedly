@@ -8,6 +8,7 @@ namespace Repository
         private readonly RepositoryContext _repoContext;
         private IUserRepository _user;
         private ICollectionRepository _collection;
+        private ICollectionFeedRepository _collectionFeedRepository;
 
         public RepositoryWrapper(RepositoryContext repositoryContext)
         {
@@ -17,5 +18,7 @@ namespace Repository
         public IUserRepository User => _user ?? (_user = new UserRepository(_repoContext));
 
         public ICollectionRepository Collection => _collection ?? (_collection = new CollectionRepository(_repoContext));
+
+        public ICollectionFeedRepository CollectionFeed => _collectionFeedRepository ?? (_collectionFeedRepository = new CollectionFeedRepository(_repoContext));
     }
 }

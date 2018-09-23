@@ -8,7 +8,7 @@ namespace Entities.Models
     public class User
     {
         [Key]
-        public int UserId { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = nameof(Name) + " is required")]
         public string Name { get; set; }
@@ -16,6 +16,6 @@ namespace Entities.Models
         [Required(ErrorMessage = nameof(Password) + " is required")]
         public string Password { get; set; }
 
-        //public ICollection<Collection> Collections { get; set; }
+        public ICollection<Collection> Collections { get; set; } = new HashSet<Collection>();
     }
 }

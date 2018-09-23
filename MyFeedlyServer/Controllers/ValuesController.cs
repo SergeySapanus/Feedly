@@ -26,17 +26,13 @@ namespace MyFeedlyServer.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            var domesticCollections = _repoWrapper.Collection.FindByCondition(x => x.User.Name.Equals("Domestic"));
+            return _repoWrapper.CollectionFeed
+                .FindByCondition(cf => cf.Collection.User.Name == "Name").Select(cf => cf.Id.ToString());
 
-            var collectionNames = domesticCollections as Collection[] ?? domesticCollections.ToArray();
-            if (collectionNames.Any())
-                return collectionNames.Select(c => c.Name);
+            return _repoWrapper.Collection.
+                FindByCondition(x => x.User.Name.Equals("Domestic")).Select(c => c.Name);
 
-            var users = _repoWrapper.User.FindAll();
-
-            var userNames = users as User[] ?? users.ToArray();
-            if (userNames.Any())
-                return userNames.Select(u => u.Name);
+            return _repoWrapper.User.FindAll().Select(u => u.Name);
 
             return new[] { "Empty" };
         }

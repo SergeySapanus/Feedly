@@ -15,9 +15,5 @@ namespace Entities.Models
 
         [Required(ErrorMessage = nameof(Feed) + " is required")]
         public Feed Feed { get; set; }
-
-        //public ICollection<Collection> Collections { get; set; }
-
-        //public ICollection<Feed> Feeds { get; set; }
     }
 }
