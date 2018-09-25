@@ -28,7 +28,7 @@ namespace MyFeedlyServer
             services.ConfigureLoggerService();
             services.ConfigureMsSqlContext(Configuration);
             services.ConfigureRepositoryWrapper();
-            services.AddMvc();
+            services.ConfigureMvc();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

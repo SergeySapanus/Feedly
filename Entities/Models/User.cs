@@ -1,12 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Entities.Models
 {
     [Table("Users")]
     public class User
     {
+        private ICollection<Collection> _collections = new HashSet<Collection>();
+        private readonly ILazyLoader _lazyLoader;
+
+        public User()
+        {
+        }
+
+        private User(ILazyLoader lazyLoader)
+        {
+            _lazyLoader = lazyLoader;
+        }
+
         [Key]
         public int Id { get; set; }
 
@@ -16,6 +29,10 @@ namespace Entities.Models
         [Required(ErrorMessage = nameof(Password) + " is required")]
         public string Password { get; set; }
 
-        public virtual ICollection<Collection> Collections { get; set; } = new HashSet<Collection>();
+        public ICollection<Collection> Collections
+        {
+            get => _lazyLoader.Load(this, ref _collections);
+            set => _collections = value;
+        }
     }
 }

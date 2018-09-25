@@ -41,12 +41,20 @@ namespace MyFeedlyServer.Extensions
         public static void ConfigureMsSqlContext(this IServiceCollection services, IConfiguration config)
         {
             var connectionString = config.GetConnectionString("ConnectionString");
-            services.AddDbContext<RepositoryContext>(o => o.UseLazyLoadingProxies().UseSqlServer(connectionString));
+            services.AddDbContext<RepositoryContext>(o => o.UseLazyLoadingProxies(false).UseSqlServer(connectionString));
         }
 
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+        }
+
+        public static void ConfigureMvc(this IServiceCollection services)
+        {
+            services
+                .AddMvc()
+                .AddJsonOptions(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
     }
 }

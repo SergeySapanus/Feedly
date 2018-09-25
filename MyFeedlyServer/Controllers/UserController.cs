@@ -25,7 +25,7 @@ namespace MyFeedlyServer.Controllers
             {
                 var users = _repository.User.GetAllUsers().Select(u => new UserModel(u));
 
-                _logger.LogInfo($"Returned all users from database.");
+                _logger.LogInfo($"Returned all {nameof(users)} from database.");
 
                 return Ok(users);
             }

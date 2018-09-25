@@ -1,8 +1,4 @@
 ﻿using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyFeedlyServer.Models
 {
@@ -12,10 +8,12 @@ namespace MyFeedlyServer.Models
         {
         }
 
+        public int Id => Source.Id;
+
         public string Name => Source.Name;
 
         public string Password => Source.Password;
 
-        public int ColectionsCount => Source.Collections.Count();
+        public int ColectionsCount => Source.Collections.Count;
     }
 }
