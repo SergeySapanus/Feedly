@@ -16,6 +16,6 @@ namespace Entities.Models
         [Required(ErrorMessage = nameof(Password) + " is required")]
         public string Password { get; set; }
 
-        public ICollection<Collection> Collections { get; set; } = new HashSet<Collection>();
+        public virtual ICollection<Collection> Collections { get; set; } = new HashSet<Collection>();
     }
 }

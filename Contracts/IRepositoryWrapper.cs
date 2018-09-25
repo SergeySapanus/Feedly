@@ -7,5 +7,9 @@
         ICollectionRepository Collection { get; }
 
         ICollectionFeedRepository CollectionFeed { get; }
+
+        IFeedRepository Feed { get; }
+
+        INewsRepository News { get; }
     }
 }

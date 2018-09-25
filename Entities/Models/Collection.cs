@@ -15,8 +15,8 @@ namespace Entities.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = nameof(User) + " is required")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
-        public ICollection<CollectionFeed> CollectionsFeeds { get; set; } = new HashSet<CollectionFeed>();
+        public virtual ICollection<CollectionFeed> CollectionsFeeds { get; set; } = new HashSet<CollectionFeed>();
     }
 }

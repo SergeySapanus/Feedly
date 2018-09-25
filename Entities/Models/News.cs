@@ -13,6 +13,6 @@ namespace Entities.Models
         public string Content { get; set; }
 
         [Required(ErrorMessage = nameof(Feed) + " is required")]
-        public Feed Feed { get; set; }
+        public virtual Feed Feed { get; set; }
     }
 }

@@ -16,8 +16,8 @@ namespace Entities.Models
         [Required(ErrorMessage = nameof(Hash) + " is required")]
         public string Hash { get; set; }
 
-        public ICollection<CollectionFeed> CollectionsFeeds { get; set; } = new HashSet<CollectionFeed>();
+        public virtual ICollection<CollectionFeed> CollectionsFeeds { get; set; } = new HashSet<CollectionFeed>();
 
-        public ICollection<News> News { get; set; } = new HashSet<News>();
+        public virtual ICollection<News> News { get; set; } = new HashSet<News>();
     }
 }

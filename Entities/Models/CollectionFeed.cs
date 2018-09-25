@@ -11,9 +11,9 @@ namespace Entities.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = nameof(Collection) + " is required")]
-        public Collection Collection { get; set; }
+        public virtual Collection Collection { get; set; }
 
         [Required(ErrorMessage = nameof(Feed) + " is required")]
-        public Feed Feed { get; set; }
+        public virtual Feed Feed { get; set; }
     }
 }
