@@ -43,7 +43,7 @@ namespace MyFeedlyServer.Controllers
             {
                 var user = new UserModel(_repository.User.GetUserById(id));
 
-                if (user.IsNull)
+                if (user.IsNull())
                 {
                     _logger.LogError($"{nameof(user)} with id: {id}, hasn't been found in db.");
                     return NotFound();

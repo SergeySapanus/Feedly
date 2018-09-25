@@ -9,6 +9,6 @@
             Source = source;
         }
 
-        public bool IsNull => ReferenceEquals(Source, null);
+        public bool IsNull() => ReferenceEquals(Source, null);
     }
 }
