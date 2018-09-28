@@ -1,8 +1,11 @@
 ﻿using System;
-using System.Linq;
 using Contracts;
+using Entities.Extensions;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
+using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Models;
+using MyFeedlyServer.Resources;
 
 namespace MyFeedlyServer.Controllers
 {
@@ -18,21 +21,64 @@ namespace MyFeedlyServer.Controllers
             _repository = repository;
         }
 
-        [HttpGet("user/{userId}")]
-        public IActionResult GetCollectionsByUserId(int userId)
+        [HttpGet("{id}", Name = nameof(GetCollectionById))]
+        public IActionResult GetCollectionById(int id)
         {
             try
             {
-                var collections = _repository.Collection.FindByCondition(c => c.User.Id == userId).Select(c => new CollectionModel(c));
+                var collection = new CollectionModel(_repository.Collection.GetCollectionById(id));
 
-                _logger.LogInfo($"Returned {nameof(collections)} by {nameof(userId)}: {userId}");
-
-                return Ok(collections);
+                if (collection.IsNull())
+                {
+                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), id));
+                    return NotFound();
+                }
+                else
+                {
+                    _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(collection), id));
+                    return Ok(collection);
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside {nameof(GetCollectionsByUserId)} action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                _logger.LogError(string.Format(Resource.LogErrorException, nameof(GetCollectionById), ex.InnerException?.Message ?? ex.Message));
+                return StatusCode(500, Resource.Status500);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CreateCollection([FromBody]Collection collection)
+        {
+            try
+            {
+                if (collection.IsNull())
+                {
+                    _logger.LogError(string.Format(Resource.LogErrorObjectIsNull, nameof(collection)));
+                    return BadRequest(string.Format(Resource.Status400BadRequestObjectIsNull, nameof(collection)));
+                }
+
+                var user = _repository.User.GetUserById(collection.UserId);
+                if (user.IsNull())
+                {
+                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), collection.UserId));
+                    return NotFound();
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(collection), ModelState.GetAllErrors()));
+                    return BadRequest(Resource.Status400BadRequestInvalidModel);
+                }
+
+                _repository.Collection.CreateCollection(collection);
+
+                return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityModel<Collection>(collection));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(Resource.LogErrorException, nameof(CreateCollection), ex.InnerException?.Message ?? ex.Message));
+
+                return StatusCode(500, Resource.Status500);
             }
         }
     }

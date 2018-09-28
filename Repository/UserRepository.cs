@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities;
+using Entities.Extensions;
 using Entities.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,12 @@ namespace Repository
         {
         }
 
+        public void CreateUser(User user)
+        {
+            Create(user);
+            Save();
+        }
+
         public IEnumerable<User> GetAllUsers()
         {
             return FindAll()
@@ -23,6 +30,19 @@ namespace Repository
         {
             return FindByCondition(u => u.Id.Equals(id))
              .FirstOrDefault();
+        }
+
+        public void UpdateUser(User dbUser, User user)
+        {
+            dbUser.Map(user);
+            Update(dbUser);
+            Save();
+        }
+
+        public void DeleteUser(User user)
+        {
+            Delete(user);
+            Save();
         }
     }
 }

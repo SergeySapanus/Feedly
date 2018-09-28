@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Entities.Abstracts;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Entities.Models
 {
     [Table("Collections")]
-    public class Collection
+    public class Collection: IEntity
     {
         private User _user;
+        private ICollection<CollectionFeed> _collectionsFeeds = new HashSet<CollectionFeed>();
         private readonly ILazyLoader _lazyLoader;
 
         public Collection()
@@ -27,15 +29,20 @@ namespace Entities.Models
         [StringLength(50, ErrorMessage = nameof(Name) + " can't be longer than 50 characters")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = nameof(User) + " is required")]
         public User User
         {
             get => _lazyLoader.Load(this, ref _user);
             set => _user = value;
         }
 
+        [Required(ErrorMessage = nameof(User) + " is required")]
         public int UserId { get; set; }
 
-        public virtual ICollection<CollectionFeed> CollectionsFeeds { get; set; } = new HashSet<CollectionFeed>();
+
+        public ICollection<CollectionFeed> CollectionsFeeds
+        {
+            get => _lazyLoader.Load(this, ref _collectionsFeeds);
+            set => _collectionsFeeds = value;
+        }
     }
 }

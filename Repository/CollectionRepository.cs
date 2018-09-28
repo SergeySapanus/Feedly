@@ -1,4 +1,6 @@
-﻿using Contracts;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Contracts;
 using Entities;
 using Entities.Models;
 
@@ -9,6 +11,22 @@ namespace Repository
         public CollectionRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         {
+        }
+
+        public void CreateCollection(Collection collection)
+        {
+            Create(collection);
+            Save();
+        }
+
+        public IEnumerable<Collection> CollectionsByUser(int userId)
+        {
+            return FindByCondition(a => a.UserId.Equals(userId));
+        }
+
+        public Collection GetCollectionById(int id)
+        {
+            return FindByCondition(a => a.Id.Equals(id)).FirstOrDefault(); 
         }
     }
 }

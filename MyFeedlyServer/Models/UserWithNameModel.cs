@@ -2,9 +2,9 @@
 
 namespace MyFeedlyServer.Models
 {
-    public class CollectionModel : EntityModel<Collection>
+    public class UserWithNameModel : EntityModel<User>
     {
-        public CollectionModel(Collection source) : base(source)
+        public UserWithNameModel(User source) : base(source)
         {
         }
 

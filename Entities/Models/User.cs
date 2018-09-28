@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Entities.Abstracts;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Entities.Models
 {
     [Table("Users")]
-    public class User
+    public class User : IEntity
     {
         private ICollection<Collection> _collections = new HashSet<Collection>();
         private readonly ILazyLoader _lazyLoader;

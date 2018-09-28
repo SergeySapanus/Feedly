@@ -2,13 +2,11 @@
 
 namespace MyFeedlyServer.Models
 {
-    public class UserModel : NullModel<User>
+    public class UserModel : EntityModel<User>
     {
         public UserModel(User user) : base(user)
         {
         }
-
-        public int Id => Source.Id;
 
         public string Name => Source.Name;
 
