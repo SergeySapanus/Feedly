@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Entities.Abstracts;
+using Entities.Abstract;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Entities.Models
+namespace Entities.Concrete
 {
     [Table("Users")]
     public class User : IEntity
@@ -24,10 +24,8 @@ namespace Entities.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = nameof(Name) + " is required")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = nameof(Password) + " is required")]
         public string Password { get; set; }
 
         public ICollection<Collection> Collections

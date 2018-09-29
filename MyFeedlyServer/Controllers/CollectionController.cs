@@ -1,10 +1,10 @@
 ﻿using System;
 using Contracts;
+using Entities.Concrete;
 using Entities.Extensions;
-using Entities.Models;
+using Entities.Model;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Extensions;
-using MyFeedlyServer.Models;
 using MyFeedlyServer.Resources;
 
 namespace MyFeedlyServer.Controllers
@@ -26,7 +26,7 @@ namespace MyFeedlyServer.Controllers
         {
             try
             {
-                var collection = new CollectionModel(_repository.Collection.GetCollectionById(id));
+                var collection = new CollectionGetModel(_repository.Collection.GetCollectionById(id));
 
                 if (collection.IsNull())
                 {
@@ -47,16 +47,10 @@ namespace MyFeedlyServer.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCollection([FromBody]Collection collection)
+        public IActionResult CreateCollection([FromBody]CollectionCreateOrUpdateModel collection)
         {
             try
             {
-                if (collection.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorObjectIsNull, nameof(collection)));
-                    return BadRequest(string.Format(Resource.Status400BadRequestObjectIsNull, nameof(collection)));
-                }
-
                 var user = _repository.User.GetUserById(collection.UserId);
                 if (user.IsNull())
                 {
@@ -70,9 +64,9 @@ namespace MyFeedlyServer.Controllers
                     return BadRequest(Resource.Status400BadRequestInvalidModel);
                 }
 
-                _repository.Collection.CreateCollection(collection);
+                _repository.Collection.CreateCollection(collection.GetEntity());
 
-                return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityModel<Collection>(collection));
+                return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityModel<Collection>(collection.GetEntity()));
             }
             catch (Exception ex)
             {

@@ -2,7 +2,7 @@
 using System.Linq;
 using Contracts;
 using Entities;
-using Entities.Models;
+using Entities.Concrete;
 
 namespace Repository
 {
@@ -17,11 +17,6 @@ namespace Repository
         {
             Create(collection);
             Save();
-        }
-
-        public IEnumerable<Collection> CollectionsByUser(int userId)
-        {
-            return FindByCondition(a => a.UserId.Equals(userId));
         }
 
         public Collection GetCollectionById(int id)

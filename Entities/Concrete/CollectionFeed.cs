@@ -1,14 +1,14 @@
-﻿using Entities.Abstracts;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Entities.Abstract;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Entities.Models
+namespace Entities.Concrete
 {
     [Table("CollectionsFeeds")]
     public class CollectionFeed : IEntity
     {
-        private ILazyLoader _lazyLoader;
+        private readonly ILazyLoader _lazyLoader;
         private Collection _collection;
         private Feed _feed;
 
@@ -30,7 +30,6 @@ namespace Entities.Models
             set => _collection = value;
         }
 
-        [Required(ErrorMessage = nameof(Collection) + " is required")]
         public int CollectionId { get; set; }
 
         public Feed Feed
@@ -39,7 +38,6 @@ namespace Entities.Models
             set => _feed = value;
         }
 
-        [Required(ErrorMessage = nameof(Feed) + " is required")]
         public int FeedId { get; set; }
     }
 }

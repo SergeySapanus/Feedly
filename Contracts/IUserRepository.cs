@@ -1,5 +1,5 @@
-﻿using Entities.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Entities.Concrete;
 
 namespace Contracts
 {

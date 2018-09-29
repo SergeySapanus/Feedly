@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Entities.Abstracts;
+using Entities.Abstract;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Entities.Models
+namespace Entities.Concrete
 {
     [Table("Collections")]
     public class Collection: IEntity
@@ -25,8 +25,6 @@ namespace Entities.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = nameof(Name) + " is required")]
-        [StringLength(50, ErrorMessage = nameof(Name) + " can't be longer than 50 characters")]
         public string Name { get; set; }
 
         public User User
@@ -35,7 +33,6 @@ namespace Entities.Models
             set => _user = value;
         }
 
-        [Required(ErrorMessage = nameof(User) + " is required")]
         public int UserId { get; set; }
 
 

@@ -1,6 +1,6 @@
 ﻿using Contracts;
 using Entities;
-using Entities.Models;
+using Entities.Concrete;
 
 namespace Repository
 {
@@ -9,6 +9,14 @@ namespace Repository
         public CollectionFeedRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         {
+        }
+
+        public void CreateCollectionFeed(Collection collection, Feed feed)
+        {
+            var collectionFeed = new CollectionFeed { Collection = collection, Feed = feed };
+
+            Create(collectionFeed);
+            Save();
         }
     }
 }

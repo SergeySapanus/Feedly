@@ -1,15 +1,15 @@
-﻿using Entities.Abstracts;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Entities.Abstract;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Entities.Models
+namespace Entities.Concrete
 {
     [Table("News")]
     public class News : IEntity
     {
         private Feed _feed;
-        private ILazyLoader _lazyLoader;
+        private readonly ILazyLoader _lazyLoader;
 
         public News()
         {
@@ -23,7 +23,6 @@ namespace Entities.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = nameof(Content) + " is required")]
         public string Content { get; set; }
 
         public Feed Feed
@@ -32,7 +31,6 @@ namespace Entities.Models
             set => _feed = value;
         }
 
-        [Required(ErrorMessage = nameof(Feed) + " is required")]
         public int FeedId { get; set; }
     }
 }

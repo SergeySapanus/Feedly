@@ -1,6 +1,6 @@
 ﻿using Contracts;
 using Entities;
-using Entities.Models;
+using Entities.Concrete;
 
 namespace Repository
 {

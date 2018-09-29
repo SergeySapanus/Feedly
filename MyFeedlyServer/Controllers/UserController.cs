@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Contracts;
-using Entities.Models;
+using Entities.Concrete;
 using Entities.Extensions;
+using Entities.Model;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Extensions;
-using MyFeedlyServer.Models;
 using MyFeedlyServer.Resources;
 
 namespace MyFeedlyServer.Controllers
@@ -27,7 +27,7 @@ namespace MyFeedlyServer.Controllers
         {
             try
             {
-                var users = _repository.User.GetAllUsers().Select(u => new UserModel(u));
+                var users = _repository.User.GetAllUsers().Select(u => new UserGetModel(u));
 
                 _logger.LogInfo(Resource.LogInfoGetAllUsers);
 
@@ -48,7 +48,7 @@ namespace MyFeedlyServer.Controllers
         {
             try
             {
-                var user = new UserModel(_repository.User.GetUserById(id));
+                var user = new UserGetModel(_repository.User.GetUserById(id));
 
                 if (user.IsNull())
                 {
@@ -73,7 +73,7 @@ namespace MyFeedlyServer.Controllers
         {
             try
             {
-                var user = new UserWithCollectionsModel(_repository.User.GetUserById(id));
+                var user = new UserWithCollectionsGetModel(_repository.User.GetUserById(id));
 
                 if (user.IsNull())
                 {
@@ -95,25 +95,19 @@ namespace MyFeedlyServer.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody]User user)
+        public IActionResult CreateUser([FromBody]UserCreateOrUpdateModel user)
         {
             try
             {
-                if (user.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorObjectIsNull, nameof(user)));
-                    return BadRequest(string.Format(Resource.Status400BadRequestObjectIsNull, nameof(user)));
-                }
-
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
                     return BadRequest(Resource.Status400BadRequestInvalidModel);
                 }
 
-                _repository.User.CreateUser(user);
+                _repository.User.CreateUser(user.GetEntity());
 
-                return CreatedAtRoute(nameof(GetUserById), new { id = user.Id }, new EntityModel<User>(user));
+                return CreatedAtRoute(nameof(GetUserById), new { id = user.Id }, new EntityModel<User>(user.GetEntity()));
             }
             catch (Exception ex)
             {
@@ -124,16 +118,10 @@ namespace MyFeedlyServer.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody]User user)
+        public IActionResult UpdateUser(int id, [FromBody]UserCreateOrUpdateModel user)
         {
             try
             {
-                if (user.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorObjectIsNull, nameof(user)));
-                    return BadRequest(string.Format(Resource.Status400BadRequestObjectIsNull, nameof(user)));
-                }
-
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
@@ -147,7 +135,7 @@ namespace MyFeedlyServer.Controllers
                     return NotFound();
                 }
 
-                _repository.User.UpdateUser(dbUser, user);
+                _repository.User.UpdateUser(dbUser, user.GetEntity());
 
                 return NoContent();
             }
