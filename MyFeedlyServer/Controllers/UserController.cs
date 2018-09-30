@@ -26,47 +26,25 @@ namespace MyFeedlyServer.Controllers
         [HttpGet]
         public IActionResult GetAllUsers()
         {
-            try
-            {
-                var users = _repository.User.GetAllUsers().Select(u => new UserGetModel(u));
+            var users = _repository.User.GetAllUsers().Select(u => new UserGetModel(u));
 
-                _logger.LogInfo(Resource.LogInfoGetAllUsers);
-
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format(Resource.LogErrorException,
-                    nameof(GetAllUsers),
-                    ex.InnerException?.Message ?? ex.Message));
-
-                return StatusCode(500, Resource.Status500);
-            }
+            _logger.LogInfo(Resource.LogInfoGetAllUsers);
+            return Ok(users);
         }
 
         [HttpGet("{id}", Name = nameof(GetUserById))]
         public IActionResult GetUserById(int id)
         {
-            try
-            {
-                var user = new UserGetModel(_repository.User.GetUserById(id));
+            var user = new UserGetModel(_repository.User.GetUserById(id));
 
-                if (user.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
-                    return NotFound();
-                }
-                else
-                {
-                    _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), id));
-                    return Ok(user);
-                }
-            }
-            catch (Exception ex)
+            if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(GetUserById), ex.InnerException?.Message ?? ex.Message));
-                return StatusCode(500, Resource.Status500);
+                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
+                return NotFound();
             }
+
+            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), id));
+            return Ok(user);
         }
 
         [HttpGet("{id}/collection")]
@@ -81,11 +59,9 @@ namespace MyFeedlyServer.Controllers
                     _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
                     return NotFound();
                 }
-                else
-                {
-                    _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), id));
-                    return Ok(user);
-                }
+
+                _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), id));
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -98,78 +74,52 @@ namespace MyFeedlyServer.Controllers
         [HttpPost]
         public IActionResult CreateUser([FromBody]UserCreateOrUpdateModel user)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
-                    return BadRequest(Resource.Status400BadRequestInvalidModel);
-                }
-
-                _repository.User.CreateUser(user.GetEntity());
-
-                return CreatedAtRoute(nameof(GetUserById), new { id = user.Id }, new EntityModel<User>(user.GetEntity()));
+                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
+                return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(CreateUser), ex.InnerException?.Message ?? ex.Message));
 
-                return StatusCode(500, Resource.Status500);
-            }
+            _repository.User.CreateUser(user.GetEntity());
+
+            return CreatedAtRoute(nameof(GetUserById), new { id = user.Id }, new EntityModel<User>(user.GetEntity()));
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateUser(int id, [FromBody]UserCreateOrUpdateModel user)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
-                    return BadRequest(Resource.Status400BadRequestInvalidModel);
-                }
-
-                var dbUser = _repository.User.GetUserById(id);
-                if (dbUser.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
-                    return NotFound();
-                }
-
-                _repository.User.UpdateUser(dbUser, user.GetEntity());
-
-                return NoContent();
+                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
+                return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
-            catch (Exception ex)
+
+            var dbUser = _repository.User.GetUserById(id);
+            if (dbUser.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(CreateUser), ex.InnerException?.Message ?? ex.Message));
-
-                return StatusCode(500, Resource.Status500);
+                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
+                return NotFound();
             }
+
+            _repository.User.UpdateUser(dbUser, user.GetEntity());
+
+            return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(int id)
         {
-            try
+            var user = _repository.User.GetUserById(id);
+            if (user.IsNull())
             {
-                var user = _repository.User.GetUserById(id);
-                if (user.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
-                    return NotFound();
-                }
-
-                _repository.User.DeleteUser(user);
-
-                return NoContent();
+                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(CreateUser), ex.InnerException?.Message ?? ex.Message));
 
-                return StatusCode(500, Resource.Status500);
-            }
+            _repository.User.DeleteUser(user);
+
+            return NoContent();
         }
     }
 }

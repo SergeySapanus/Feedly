@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Contracts;
 using Contracts.Repositories;
 using Entities;
@@ -31,80 +28,53 @@ namespace MyFeedlyServer.Controllers
         [HttpGet("{id}", Name = nameof(GetCollectionById))]
         public IActionResult GetCollectionById(int id)
         {
-            try
-            {
-                var collection = new CollectionGetModel(_repository.Collection.GetCollectionById(id));
+            var collection = new CollectionGetModel(_repository.Collection.GetCollectionById(id));
 
-                if (collection.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), id));
-                    return NotFound();
-                }
-                else
-                {
-                    _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(collection), id));
-                    return Ok(collection);
-                }
-            }
-            catch (Exception ex)
+            if (collection.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(GetCollectionById), ex.InnerException?.Message ?? ex.Message));
-                return StatusCode(500, Resource.Status500);
+                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), id));
+                return NotFound();
             }
+
+            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(collection), id));
+            return Ok(collection);
         }
 
         [HttpGet("{id}/news", Name = nameof(GetNewsByCollectionId))]
         public IActionResult GetNewsByCollectionId(int id)
         {
-            try
+            var collection = _repository.Collection.GetCollectionById(id);
+            if (collection.IsNull())
             {
-                var collection = _repository.Collection.GetCollectionById(id);
-                if (collection.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), id));
-                    return NotFound();
-                }
-
-                var result = _repository.Feed.GetNewsByCollection(collection, _syndicationManager).Select(f => new NewsModel(f));
-
-                _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(collection), id));
-                return Ok(result);
+                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), id));
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(GetCollectionById), ex.InnerException?.Message ?? ex.Message));
-                return StatusCode(500, Resource.Status500);
-            }
+
+            var result = _repository.Feed.GetNewsByCollection(collection, _syndicationManager).Select(f => new NewsModel(f));
+
+            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(collection), id));
+            return Ok(result);
         }
 
         [HttpPost]
         public IActionResult CreateCollection([FromBody]CollectionCreateOrUpdateModel collection)
         {
-            try
+            var user = _repository.User.GetUserById(collection.UserId);
+            if (user.IsNull())
             {
-                var user = _repository.User.GetUserById(collection.UserId);
-                if (user.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), collection.UserId));
-                    return NotFound();
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(collection), ModelState.GetAllErrors()));
-                    return BadRequest(Resource.Status400BadRequestInvalidModel);
-                }
-
-                _repository.Collection.CreateCollection(collection.GetEntity());
-
-                return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityModel<Collection>(collection.GetEntity()));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), collection.UserId));
+                return NotFound();
             }
-            catch (Exception ex)
+
+            if (!ModelState.IsValid)
             {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(CreateCollection), ex.InnerException?.Message ?? ex.Message));
-
-                return StatusCode(500, Resource.Status500);
+                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(collection), ModelState.GetAllErrors()));
+                return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
+
+            _repository.Collection.CreateCollection(collection.GetEntity());
+
+            return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityModel<Collection>(collection.GetEntity()));
         }
     }
 }

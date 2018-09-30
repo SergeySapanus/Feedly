@@ -1,5 +1,4 @@
-﻿using System;
-using Contracts;
+﻿using Contracts;
 using Contracts.Repositories;
 using Entities;
 using Entities.Extensions;
@@ -25,66 +24,47 @@ namespace MyFeedlyServer.Controllers
         [HttpGet("{id}", Name = nameof(GetFeedById))]
         public IActionResult GetFeedById(int id)
         {
-            try
-            {
-                var feed = new FeedGetModel(_repository.Feed.GetFeedById(id));
+            var feed = new FeedGetModel(_repository.Feed.GetFeedById(id));
 
-                if (feed.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(feed), id));
-                    return NotFound();
-                }
-                else
-                {
-                    _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(feed), id));
-                    return Ok(feed);
-                }
-            }
-            catch (Exception ex)
+            if (feed.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(GetFeedById), ex.InnerException?.Message ?? ex.Message));
-                return StatusCode(500, Resource.Status500);
+                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(feed), id));
+                return NotFound();
             }
+
+            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(feed), id));
+            return Ok(feed);
         }
 
         [HttpPost]
         public IActionResult CreateFeed([FromBody]FeedCreateOrUpdateModel feedModel)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(feedModel), ModelState.GetAllErrors()));
-                    return BadRequest(Resource.Status400BadRequestInvalidModel);
-                }
-
-                var collection = _repository.Collection.GetCollectionById(feedModel.CollectionId);
-                if (collection.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), feedModel.CollectionId));
-                    return NotFound();
-                }
-
-                var feed = feedModel.GetEntity();
-
-                var feedByHash = _repository.Feed.GetFeedByHash(feed.GetHashCode());
-                if (feedByHash.IsNull())
-                {
-                    _repository.Feed.CreateFeed(collection, feed);
-                }
-                else
-                {
-                    _repository.CollectionFeed.CreateCollectionFeed(collection, feed = feedByHash);
-                }
-
-                return CreatedAtRoute(nameof(GetFeedById), new { id = feedModel.Id }, new EntityModel<Feed>(feed));
+                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(feedModel), ModelState.GetAllErrors()));
+                return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
-            catch (Exception ex)
+
+            var collection = _repository.Collection.GetCollectionById(feedModel.CollectionId);
+            if (collection.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(CreateFeed), ex.InnerException?.Message ?? ex.Message));
-
-                return StatusCode(500, Resource.Status500);
+                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), feedModel.CollectionId));
+                return NotFound();
             }
+
+            var feed = feedModel.GetEntity();
+
+            var feedByHash = _repository.Feed.GetFeedByHash(feed.GetHashCode());
+            if (feedByHash.IsNull())
+            {
+                _repository.Feed.CreateFeed(collection, feed);
+            }
+            else
+            {
+                _repository.CollectionFeed.CreateCollectionFeed(collection, feed = feedByHash);
+            }
+
+            return CreatedAtRoute(nameof(GetFeedById), new { id = feedModel.Id }, new EntityModel<Feed>(feed));
         }
     }
 }

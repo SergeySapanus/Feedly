@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MyFeedlyServer.CustomExceptionMiddleware;
 using Repository;
 using SyndicationService;
 
@@ -58,6 +59,11 @@ namespace MyFeedlyServer.Extensions
                 .AddMvc()
                 .AddJsonOptions(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+        }
+
+        public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
         }
     }
 }

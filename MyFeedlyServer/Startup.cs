@@ -46,7 +46,7 @@ namespace MyFeedlyServer
             });
 
             app.UseStaticFiles();
-
+            app.ConfigureCustomExceptionMiddleware();
             app.UseMvc();
         }
     }
