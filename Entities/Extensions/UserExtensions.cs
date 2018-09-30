@@ -1,6 +1,4 @@
-﻿using Entities.Concrete;
-
-namespace Entities.Extensions
+﻿namespace Entities.Extensions
 {
     public static class UserExtensions
     {

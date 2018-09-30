@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Contracts.Repositories;
 using Entities;
 using LoggerService;
 using Microsoft.AspNetCore.Builder;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository;
+using SyndicationService;
 
 namespace MyFeedlyServer.Extensions
 {
@@ -47,6 +49,7 @@ namespace MyFeedlyServer.Extensions
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddScoped<ISyndicationManager, SyndicationManager>();
         }
 
         public static void ConfigureMvc(this IServiceCollection services)

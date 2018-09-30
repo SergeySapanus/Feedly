@@ -1,6 +1,6 @@
 ﻿using Contracts;
+using Contracts.Repositories.Entities;
 using Entities;
-using Entities.Concrete;
 
 namespace Repository
 {

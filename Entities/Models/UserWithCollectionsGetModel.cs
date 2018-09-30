@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Entities.Concrete;
 
-namespace Entities.Model
+namespace Entities.Models
 {
     public class UserWithCollectionsGetModel : UserGetModel
     {

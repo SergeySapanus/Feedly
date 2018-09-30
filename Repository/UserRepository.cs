@@ -1,9 +1,8 @@
-﻿using Contracts;
-using Entities;
+﻿using Entities;
 using Entities.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using Entities.Concrete;
+using Contracts.Repositories.Entities;
 
 namespace Repository
 {

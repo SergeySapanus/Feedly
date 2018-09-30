@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Entities.Abstract;
+using Entities.Contracts;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Entities.Concrete
+namespace Entities
 {
     [Table("Collections")]
     public class Collection: IEntity

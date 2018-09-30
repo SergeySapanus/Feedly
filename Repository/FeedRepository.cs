@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Contracts;
+using Contracts.Repositories.Entities;
 using Entities;
-using Entities.Concrete;
 
 namespace Repository
 {
@@ -32,6 +34,34 @@ namespace Repository
 
             Create(feed);
             Save();
+        }
+
+        public void AddNews(Feed feed, IEnumerable<News> news)
+        {
+            foreach (var n in news)
+                feed.News.Add(n);
+
+            Update(feed);
+            Save();
+        }
+
+        public IEnumerable<News> GetNewsByCollection(Collection collection, ISyndicationManager syndicationManager)
+        {
+            var news = collection.CollectionsFeeds.SelectMany(cf => GetNewsByFeed(cf.Feed, syndicationManager).Result);
+
+            return news;
+        }
+
+        private async Task<IEnumerable<News>> GetNewsByFeed(Feed feed, ISyndicationManager syndicationManager)
+        {
+            if (feed.News.Count > 0)
+                return feed.News;
+
+            var news = await syndicationManager.GetNews(feed);
+
+            await Task.Run(() => { AddNews(feed, news); });
+
+            return news;
         }
     }
 }

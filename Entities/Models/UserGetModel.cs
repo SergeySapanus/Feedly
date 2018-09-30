@@ -1,6 +1,4 @@
-﻿using Entities.Concrete;
-
-namespace Entities.Model
+﻿namespace Entities.Models
 {
     public class UserGetModel : EntityModel<User>
     {

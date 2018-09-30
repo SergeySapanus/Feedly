@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using Entities.Concrete;
+using Contracts.Repositories;
+using Entities;
 
-namespace Contracts
+namespace Contracts.Repositories.Entities
 {
     public interface IUserRepository : IRepositoryBase<User>
     {

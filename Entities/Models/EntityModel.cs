@@ -1,6 +1,6 @@
-﻿using Entities.Abstract;
+﻿using Entities.Contracts;
 
-namespace Entities.Model
+namespace Entities.Models
 {
     public class EntityModel<T> where T : IEntity
     {

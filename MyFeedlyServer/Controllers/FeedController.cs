@@ -1,8 +1,9 @@
 ﻿using System;
 using Contracts;
-using Entities.Concrete;
+using Contracts.Repositories;
+using Entities;
 using Entities.Extensions;
-using Entities.Model;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Resources;

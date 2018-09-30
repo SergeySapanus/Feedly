@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Entities.Concrete;
 
-namespace Entities.Model
+namespace Entities.Models
 {
     public class UserCreateOrUpdateModel : EntityModel<User>
     {

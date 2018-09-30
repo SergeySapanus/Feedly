@@ -1,7 +1,6 @@
-﻿using Entities.Concrete;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Model
+namespace Entities.Models
 {
     public class FeedCreateOrUpdateModel : EntityModel<Feed>
     {
