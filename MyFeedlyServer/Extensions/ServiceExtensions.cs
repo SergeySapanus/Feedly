@@ -3,6 +3,7 @@ using Contracts.Repositories;
 using Entities;
 using LoggerService;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,7 +59,8 @@ namespace MyFeedlyServer.Extensions
             services
                 .AddMvc()
                 .AddJsonOptions(options =>
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)

@@ -7,7 +7,6 @@ using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Resources;
-using NewsModel = Entities.Models.NewsModel;
 
 namespace MyFeedlyServer.Controllers
 {
