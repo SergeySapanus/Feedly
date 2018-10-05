@@ -8,6 +8,7 @@ namespace Contracts.Repositories.Entities
     {
         IEnumerable<User> GetAllUsers();
         User GetUserById(int id);
+        User GetUserByName(string name);
 
         void CreateUser(User user);
         void UpdateUser(User dbUser, User user);

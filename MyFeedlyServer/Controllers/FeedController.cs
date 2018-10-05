@@ -28,7 +28,7 @@ namespace MyFeedlyServer.Controllers
 
             if (feed.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(feed), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(feed), nameof(id), id));
                 return NotFound();
             }
 
@@ -48,7 +48,7 @@ namespace MyFeedlyServer.Controllers
             var collection = _repository.Collection.GetCollectionById(feedModel.CollectionId);
             if (collection.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), feedModel.CollectionId));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(feedModel.CollectionId), feedModel.CollectionId));
                 return NotFound();
             }
 

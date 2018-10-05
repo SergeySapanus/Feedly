@@ -5,6 +5,7 @@ using Contracts.Repositories;
 using Entities;
 using Entities.Extensions;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Resources;
@@ -32,14 +33,22 @@ namespace MyFeedlyServer.Controllers
             return Ok(users);
         }
 
+        [Authorize]
         [HttpGet("{id}", Name = nameof(GetUserById))]
         public IActionResult GetUserById(int id)
         {
-            var user = new UserGetModel(_repository.User.GetUserById(id));
+            UserGetModel user;
 
+            if (!this.IsSameUser(id))
+            {
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                return NotFound();
+            }
+
+            user = new UserGetModel(_repository.User.GetUserById(id));
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
                 return NotFound();
             }
 
@@ -47,28 +56,28 @@ namespace MyFeedlyServer.Controllers
             return Ok(user);
         }
 
+        [Authorize]
         [HttpGet("{id}/collection")]
         public IActionResult GetUserWithCollections(int id)
         {
-            try
+            UserWithCollectionsGetModel user;
+
+            if (!this.IsSameUser(id))
             {
-                var user = new UserWithCollectionsGetModel(_repository.User.GetUserById(id));
-
-                if (user.IsNull())
-                {
-                    _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
-                    return NotFound();
-                }
-
-                _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), id));
-                return Ok(user);
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                return NotFound();
             }
-            catch (Exception ex)
+
+            user = new UserWithCollectionsGetModel(_repository.User.GetUserById(id));
+
+            if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorException, nameof(GetUserWithCollections), ex.InnerException?.Message ?? ex.Message));
-
-                return StatusCode(500, Resource.Status500);
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                return NotFound();
             }
+
+            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), id));
+            return Ok(user);
         }
 
         [HttpPost]
@@ -85,9 +94,16 @@ namespace MyFeedlyServer.Controllers
             return CreatedAtRoute(nameof(GetUserById), new { id = user.Id }, new EntityModel<User>(user.GetEntity()));
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public IActionResult UpdateUser(int id, [FromBody]UserCreateOrUpdateModel user)
         {
+            if (!this.IsSameUser(id))
+            {
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                return NotFound();
+            }
+
             if (!ModelState.IsValid)
             {
                 _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
@@ -97,7 +113,7 @@ namespace MyFeedlyServer.Controllers
             var dbUser = _repository.User.GetUserById(id);
             if (dbUser.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
                 return NotFound();
             }
 
@@ -106,13 +122,22 @@ namespace MyFeedlyServer.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(int id)
         {
-            var user = _repository.User.GetUserById(id);
+            User user;
+
+            if (!this.IsSameUser(id))
+            {
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                return NotFound();
+            }
+
+            user = _repository.User.GetUserById(id);
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
                 return NotFound();
             }
 

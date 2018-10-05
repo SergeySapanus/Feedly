@@ -31,6 +31,12 @@ namespace Repository
              .FirstOrDefault();
         }
 
+        public User GetUserByName(string name)
+        {
+            return FindByCondition(u => u.Name.Equals(name))
+                .FirstOrDefault();
+        }
+
         public void UpdateUser(User dbUser, User user)
         {
             dbUser.Map(user);

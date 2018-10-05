@@ -1,12 +1,15 @@
-﻿using Contracts;
+﻿using System.Text;
+using Contracts;
 using Contracts.Repositories;
 using Entities;
 using LoggerService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using MyFeedlyServer.CustomExceptionMiddleware;
 using Repository;
 using SyndicationService;
@@ -15,7 +18,7 @@ namespace MyFeedlyServer.Extensions
 {
     public static class ServiceExtensions
     {
-        internal const string CORS_POLICY = "CorsPolicy";
+        internal const string CORS_POLICY = "EnableCORS";
 
         public static void ConfigureCors(this IServiceCollection services)
         {
@@ -25,7 +28,8 @@ namespace MyFeedlyServer.Extensions
                     builder => builder.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials());
+                        .AllowCredentials()
+                        .Build());
             });
         }
 
@@ -66,6 +70,25 @@ namespace MyFeedlyServer.Extensions
         public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)
         {
             app.UseMiddleware<ExceptionMiddleware>();
+        }
+
+        public static void ConfigureAuthentication(this IServiceCollection services)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = "http://localhost:5000",
+                        ValidAudience = "http://localhost:5000",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
+                    };
+                });
         }
     }
 }

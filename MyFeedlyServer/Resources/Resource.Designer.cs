@@ -70,11 +70,11 @@ namespace MyFeedlyServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} with id: {1}, hasn&apos;t been found in db..
+        ///   Looks up a localized string similar to {0} with {1}: {2}, hasn&apos;t been found in db..
         /// </summary>
-        public static string LogErrorGetByIdIsNull {
+        public static string LogErrorGetByIsNull {
             get {
-                return ResourceManager.GetString("LogErrorGetByIdIsNull", resourceCulture);
+                return ResourceManager.GetString("LogErrorGetByIsNull", resourceCulture);
             }
         }
         

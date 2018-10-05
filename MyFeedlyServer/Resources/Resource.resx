@@ -120,8 +120,8 @@
   <data name="LogErrorException" xml:space="preserve">
     <value>Something went wrong inside {0} action: {1}</value>
   </data>
-  <data name="LogErrorGetByIdIsNull" xml:space="preserve">
-    <value>{0} with id: {1}, hasn't been found in db.</value>
+  <data name="LogErrorGetByIsNull" xml:space="preserve">
+    <value>{0} with {1}: {2}, hasn't been found in db.</value>
   </data>
   <data name="LogErrorInvalidModel" xml:space="preserve">
     <value>Invalid {0} object sent from client. {1}</value>

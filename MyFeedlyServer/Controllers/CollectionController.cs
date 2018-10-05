@@ -31,7 +31,7 @@ namespace MyFeedlyServer.Controllers
 
             if (collection.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(id), id));
                 return NotFound();
             }
 
@@ -45,7 +45,7 @@ namespace MyFeedlyServer.Controllers
             var collection = _repository.Collection.GetCollectionById(id);
             if (collection.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(collection), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(id), id));
                 return NotFound();
             }
 
@@ -61,7 +61,7 @@ namespace MyFeedlyServer.Controllers
             var user = _repository.User.GetUserById(collection.UserId);
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIdIsNull, nameof(user), collection.UserId));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(collection.UserId), collection.UserId));
                 return NotFound();
             }
 
