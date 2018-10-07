@@ -1,8 +1,10 @@
-﻿using Contracts;
+﻿using System.Linq;
+using Contracts;
 using Contracts.Repositories;
 using Entities;
 using Entities.Extensions;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Resources;
@@ -21,6 +23,15 @@ namespace MyFeedlyServer.Controllers
             _repository = repository;
         }
 
+        [HttpGet]
+        public IActionResult GetAllFeeds()
+        {
+            var feeds = _repository.Feed.GetAllFeeds().Select(f => new FeedGetModel(f));
+
+            _logger.LogInfo(Resource.LogInfoGetAllFeeds);
+            return Ok(feeds);
+        }
+
         [HttpGet("{id}", Name = nameof(GetFeedById))]
         public IActionResult GetFeedById(int id)
         {
@@ -36,6 +47,7 @@ namespace MyFeedlyServer.Controllers
             return Ok(feed);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult CreateFeed([FromBody]FeedCreateOrUpdateModel feedModel)
         {
@@ -45,7 +57,15 @@ namespace MyFeedlyServer.Controllers
                 return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
 
-            var collection = _repository.Collection.GetCollectionById(feedModel.CollectionId);
+            var autorizedUserId = this.GetAutorizedUserId();
+
+            if (!autorizedUserId.HasValue)
+            {
+                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
+                return Unauthorized();
+            }
+
+            var collection = _repository.Collection.GetCollectionByIdAndUserId(feedModel.CollectionId, autorizedUserId.Value);
             if (collection.IsNull())
             {
                 _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(feedModel.CollectionId), feedModel.CollectionId));

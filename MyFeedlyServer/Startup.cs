@@ -26,6 +26,7 @@ namespace MyFeedlyServer
             services.ConfigureCors();
             services.ConfigureIISIntegration();
             services.ConfigureLoggerService();
+            services.ConfigureSyndicationManager();
             services.ConfigureMsSqlContext(Configuration);
             services.ConfigureRepositoryWrapper();
             services.ConfigureAuthentication();

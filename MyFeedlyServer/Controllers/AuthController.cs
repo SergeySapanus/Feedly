@@ -8,6 +8,7 @@ using Contracts.Repositories;
 using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Resources;
 
 namespace MyFeedlyServer.Controllers
@@ -49,7 +50,7 @@ namespace MyFeedlyServer.Controllers
                 var tokeOptions = new JwtSecurityToken(
                     issuer: "http://localhost:5000",
                     audience: "http://localhost:5000",
-                    claims: new List<Claim> { new Claim(nameof(user.Id), user.Id.ToString()) },
+                    claims: new List<Claim> { new Claim(this.GetUserIdTypeName(), user.Id.ToString()) },
                     expires: DateTime.Now.AddMinutes(5),
                     signingCredentials: signinCredentials
                 );
@@ -57,10 +58,8 @@ namespace MyFeedlyServer.Controllers
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
                 return Ok(new { Token = tokenString });
             }
-            else
-            {
-                return Unauthorized();
-            }
+
+            return Unauthorized();
         }
     }
 }

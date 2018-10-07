@@ -13,6 +13,12 @@ namespace Repository
         {
         }
 
+        public IEnumerable<Feed> GetAllFeeds()
+        {
+            return FindAll()
+                .OrderBy(f => f.Uri);
+        }
+
         public Feed GetFeedById(int id)
         {
             return FindByCondition(u => u.Id.Equals(id))

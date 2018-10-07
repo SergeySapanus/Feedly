@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Contracts;
 using Contracts.Repositories;
 using Entities;
@@ -24,7 +23,7 @@ namespace MyFeedlyServer.Controllers
             _repository = repository;
         }
 
-        [HttpGet]
+        [HttpGet("all", Name = nameof(GetAllUsers))]
         public IActionResult GetAllUsers()
         {
             var users = _repository.User.GetAllUsers().Select(u => new UserGetModel(u));
@@ -34,49 +33,49 @@ namespace MyFeedlyServer.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id}", Name = nameof(GetUserById))]
-        public IActionResult GetUserById(int id)
+        [HttpGet]
+        public IActionResult GetUser()
         {
-            UserGetModel user;
+            var autorizedUserId = this.GetAutorizedUserId();
 
-            if (!this.IsSameUser(id))
+            if (!autorizedUserId.HasValue)
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
-                return NotFound();
+                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
+                return Unauthorized();
             }
 
-            user = new UserGetModel(_repository.User.GetUserById(id));
+            var user = new UserGetModel(_repository.User.GetUserById(autorizedUserId.Value));
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId.Value));
                 return NotFound();
             }
 
-            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), id));
+            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), autorizedUserId));
             return Ok(user);
         }
 
         [Authorize]
-        [HttpGet("{id}/collection")]
-        public IActionResult GetUserWithCollections(int id)
+        [HttpGet("collection")]
+        public IActionResult GetUserWithCollections()
         {
-            UserWithCollectionsGetModel user;
+            var autorizedUserId = this.GetAutorizedUserId();
 
-            if (!this.IsSameUser(id))
+            if (!autorizedUserId.HasValue)
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
-                return NotFound();
+                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
+                return Unauthorized();
             }
 
-            user = new UserWithCollectionsGetModel(_repository.User.GetUserById(id));
+            var user = new UserWithCollectionsGetModel(_repository.User.GetUserById(autorizedUserId.Value));
 
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId));
                 return NotFound();
             }
 
-            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), id));
+            _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(user), autorizedUserId));
             return Ok(user);
         }
 
@@ -91,29 +90,31 @@ namespace MyFeedlyServer.Controllers
 
             _repository.User.CreateUser(user.GetEntity());
 
-            return CreatedAtRoute(nameof(GetUserById), new { id = user.Id }, new EntityModel<User>(user.GetEntity()));
+            return CreatedAtRoute(nameof(GetAllUsers), new { id = user.Id }, new EntityModel<User>(user.GetEntity()));
         }
 
         [Authorize]
-        [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody]UserCreateOrUpdateModel user)
+        [HttpPut]
+        public IActionResult UpdateUser([FromBody]UserCreateOrUpdateModel user)
         {
-            if (!this.IsSameUser(id))
-            {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
-                return NotFound();
-            }
-
             if (!ModelState.IsValid)
             {
                 _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
                 return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
 
-            var dbUser = _repository.User.GetUserById(id);
+            var autorizedUserId = this.GetAutorizedUserId();
+
+            if (!autorizedUserId.HasValue)
+            {
+                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
+                return Unauthorized();
+            }
+
+            var dbUser = _repository.User.GetUserById(autorizedUserId.Value);
             if (dbUser.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId.Value));
                 return NotFound();
             }
 
@@ -123,21 +124,21 @@ namespace MyFeedlyServer.Controllers
         }
 
         [Authorize]
-        [HttpDelete("{id}")]
-        public IActionResult DeleteUser(int id)
+        [HttpDelete]
+        public IActionResult DeleteUser()
         {
-            User user;
+            var autorizedUserId = this.GetAutorizedUserId();
 
-            if (!this.IsSameUser(id))
+            if (!autorizedUserId.HasValue)
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
-                return NotFound();
+                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
+                return Unauthorized();
             }
 
-            user = _repository.User.GetUserById(id);
+            var user = _repository.User.GetUserById(autorizedUserId.Value);
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(id), id));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId.Value));
                 return NotFound();
             }
 

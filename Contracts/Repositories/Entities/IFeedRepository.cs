@@ -5,6 +5,7 @@ namespace Contracts.Repositories.Entities
 {
     public interface IFeedRepository : IRepositoryBase<Feed>
     {
+        IEnumerable<Feed> GetAllFeeds();
         Feed GetFeedById(int id);
         Feed GetFeedByHash(int hash);
 

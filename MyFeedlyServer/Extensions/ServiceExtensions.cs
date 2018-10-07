@@ -46,6 +46,11 @@ namespace MyFeedlyServer.Extensions
             services.AddSingleton<ILoggerManager, LoggerManager>();
         }
 
+        public static void ConfigureSyndicationManager(this IServiceCollection services)
+        {
+            services.AddSingleton<ISyndicationManager, SyndicationManager>();
+        }
+
         public static void ConfigureMsSqlContext(this IServiceCollection services, IConfiguration config)
         {
             var connectionString = config.GetConnectionString("ConnectionString");

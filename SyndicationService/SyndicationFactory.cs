@@ -21,7 +21,7 @@ namespace SyndicationService
             {
                 case SyndicationFeedType.Rss:
                     return new RssFeedReader(XmlReader.Create(uriEntity.Uri, new XmlReaderSettings { Async = true }));
-                case SyndicationFeedType.Feed:
+                case SyndicationFeedType.Atom:
                     return new AtomFeedReader(XmlReader.Create(uriEntity.Uri, new XmlReaderSettings { Async = true }));
                 default:
                     throw new UriFormatException(nameof(uriEntity));
@@ -39,13 +39,52 @@ namespace SyndicationService
                 {
                     if (await xmlReader.ReadAsync() && xmlReader.IsStartElement() && !xmlReader.IsEmptyElement)
                     {
-                        if (Enum.TryParse(typeof(SyndicationFeedType), xmlReader.Name, true, out var result))
-                            return (SyndicationFeedType)result;
+                        if (xmlReader.HasAttributes)
+                        {
+                            for (var j = 0; j < xmlReader.AttributeCount; j++)
+                            {
+                                var result = GetSyndicationFeedTypeFromAttribute(xmlReader.GetAttribute(j));
+                                if (result != SyndicationFeedType.None)
+                                    return result;
+                            }
+                        }
+                        else
+                        {
+                            var result = GetSyndicationFeedTypeFromElement(xmlReader.Name);
+                            if (result != SyndicationFeedType.None)
+                                return result;
+                        }
                     }
                 }
             }
 
             throw new ArgumentException(nameof(uriEntity));
+        }
+
+        private static SyndicationFeedType GetSyndicationFeedTypeFromAttribute(string attributeValue)
+        {
+            switch (attributeValue)
+            {
+                case "http://www.w3.org/2005/Atom":
+                    return SyndicationFeedType.Atom;
+                case "http://purl.org/dc/elements/1.1/":
+                    return SyndicationFeedType.Rss;
+                default:
+                    return SyndicationFeedType.None;
+            }
+        }
+
+        private static SyndicationFeedType GetSyndicationFeedTypeFromElement(string elementName)
+        {
+            switch (elementName)
+            {
+                case "feed":
+                    return SyndicationFeedType.Atom;
+                case "rss":
+                    return SyndicationFeedType.Rss;
+                default:
+                    return SyndicationFeedType.None;
+            }
         }
     }
 }

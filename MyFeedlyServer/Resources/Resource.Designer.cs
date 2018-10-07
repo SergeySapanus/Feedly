@@ -97,6 +97,24 @@ namespace MyFeedlyServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User isn&apos;t autorized..
+        /// </summary>
+        public static string LogErrorUserIsNotAutorized {
+            get {
+                return ResourceManager.GetString("LogErrorUserIsNotAutorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returned all feeds from database..
+        /// </summary>
+        public static string LogInfoGetAllFeeds {
+            get {
+                return ResourceManager.GetString("LogInfoGetAllFeeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Returned all users from database..
         /// </summary>
         public static string LogInfoGetAllUsers {

@@ -5,10 +5,15 @@ namespace MyFeedlyServer.Extensions
 {
     public static class ControllerExtensions
     {
-        public static bool IsSameUser(this Controller controller, int userId)
+        public static string GetUserIdTypeName(this Controller controller) => "UserId";
+
+        public static int? GetAutorizedUserId(this Controller controller)
         {
-            var value = controller.User.Claims.Where(c => c.Type == nameof(Entities.User.Id)).Select(c => c.Value).FirstOrDefault();
-            return !string.IsNullOrWhiteSpace(value) && int.TryParse(value, out var id) && userId == id;
+            var value = controller.User.Claims.Where(c => c.Type == GetUserIdTypeName(controller)).Select(c => c.Value).FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(value) || !int.TryParse(value, out var userId))
+                return null;
+
+            return userId;
         }
     }
 }

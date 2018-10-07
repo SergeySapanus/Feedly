@@ -6,6 +6,8 @@ namespace Contracts.Repositories.Entities
     {
         Collection GetCollectionById(int id);
 
+        Collection GetCollectionByIdAndUserId(int id, int userId);
+
         void CreateCollection(Collection collection);
     }
 }

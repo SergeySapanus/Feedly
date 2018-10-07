@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts;
@@ -10,24 +11,38 @@ namespace SyndicationService
 {
     public class SyndicationManager : ISyndicationManager
     {
+        private readonly ILoggerManager _logger;
+
+        public SyndicationManager(ILoggerManager logger)
+        {
+            _logger = logger;
+        }
+
         public async Task<List<News>> GetNews(IUriEntity uriEntity)
         {
             if (string.IsNullOrWhiteSpace(uriEntity.Uri))
                 return null;
 
-            var feedReader = await SyndicationFactory.GetSyndicationFeedReader(uriEntity);
-
             var items = new HashSet<ISyndicationItem>();
 
-            while (await feedReader.Read())
+            try
             {
-                switch (feedReader.ElementType)
+                var feedReader = await SyndicationFactory.GetSyndicationFeedReader(uriEntity);
+
+                while (await feedReader.Read())
                 {
-                    case SyndicationElementType.Item:
-                        var item = await feedReader.ReadItem();
-                        items.Add(item);
-                        break;
+                    switch (feedReader.ElementType)
+                    {
+                        case SyndicationElementType.Item:
+                            var item = await feedReader.ReadItem();
+                            items.Add(item);
+                            break;
+                    }
                 }
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError($"Something went wrong: {exception.InnerException?.Message ?? exception.Message}");
             }
 
             return items.Select(i => i.GetNews()).ToList();

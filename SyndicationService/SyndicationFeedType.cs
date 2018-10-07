@@ -2,7 +2,8 @@
 {
     enum SyndicationFeedType
     {
+        None,
         Rss,
-        Feed
+        Atom
     }
 }

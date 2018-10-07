@@ -129,6 +129,12 @@
   <data name="LogErrorObjectIsNull" xml:space="preserve">
     <value>{0} object sent from client is null.</value>
   </data>
+  <data name="LogErrorUserIsNotAutorized" xml:space="preserve">
+    <value>User isn't autorized.</value>
+  </data>
+  <data name="LogInfoGetAllFeeds" xml:space="preserve">
+    <value>Returned all feeds from database.</value>
+  </data>
   <data name="LogInfoGetAllUsers" xml:space="preserve">
     <value>Returned all users from database.</value>
   </data>

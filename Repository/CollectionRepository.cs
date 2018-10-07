@@ -11,15 +11,20 @@ namespace Repository
         {
         }
 
+        public Collection GetCollectionById(int id)
+        {
+            return FindByCondition(a => a.Id.Equals(id)).FirstOrDefault();
+        }
+
+        public Collection GetCollectionByIdAndUserId(int id, int userId)
+        {
+            return FindByCondition(a => a.Id.Equals(id) && a.UserId.Equals(userId)).FirstOrDefault();
+        }
+
         public void CreateCollection(Collection collection)
         {
             Create(collection);
             Save();
-        }
-
-        public Collection GetCollectionById(int id)
-        {
-            return FindByCondition(a => a.Id.Equals(id)).FirstOrDefault(); 
         }
     }
 }
