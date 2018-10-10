@@ -1,8 +1,8 @@
-﻿using Contracts;
-using Contracts.Repositories.Entities;
-using Entities;
+﻿using Contracts.Repositories.Entities;
+using MyFeedlyServer.Entities;
+using MyFeedlyServer.Entities.Entities;
 
-namespace Repository
+namespace MyFeedlyServer.Repository
 {
     public class CollectionFeedRepository : RepositoryBase<CollectionFeed>, ICollectionFeedRepository
     {

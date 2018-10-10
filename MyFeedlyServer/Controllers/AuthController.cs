@@ -5,9 +5,10 @@ using System.Security.Claims;
 using System.Text;
 using Contracts;
 using Contracts.Repositories;
-using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Entities.Models;
 using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Resources;
 

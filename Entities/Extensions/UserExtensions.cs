@@ -1,4 +1,6 @@
-﻿namespace Entities.Extensions
+﻿using MyFeedlyServer.Entities.Entities;
+
+namespace MyFeedlyServer.Entities.Extensions
 {
     public static class UserExtensions
     {

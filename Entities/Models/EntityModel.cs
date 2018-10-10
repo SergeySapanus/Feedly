@@ -1,6 +1,6 @@
-﻿using Entities.Contracts;
+﻿using MyFeedlyServer.Entities.Contracts;
 
-namespace Entities.Models
+namespace MyFeedlyServer.Entities.Models
 {
     public class EntityModel<T> where T : IEntity
     {

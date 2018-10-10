@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Entities;
-using Entities.Contracts;
+using MyFeedlyServer.Entities.Contracts;
+using MyFeedlyServer.Entities.Entities;
 
-namespace Contracts
+namespace MyFeedlyServer.Contracts
 {
     public interface ISyndicationManager
     {

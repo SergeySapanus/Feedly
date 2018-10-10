@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using Contracts;
 using Contracts.Repositories;
-using Entities;
-using Entities.Extensions;
-using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Entities.Entities;
+using MyFeedlyServer.Entities.Extensions;
+using MyFeedlyServer.Entities.Models;
 using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Resources;
 

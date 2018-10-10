@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Xml;
-using Entities.Contracts;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
+using MyFeedlyServer.Entities.Contracts;
 
-namespace SyndicationService
+namespace MyFeedlyServer.SyndicationService
 {
     static class SyndicationFactory
     {

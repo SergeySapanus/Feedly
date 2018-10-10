@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Contracts;
 using Contracts.Repositories.Entities;
-using Entities;
+using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Entities;
+using MyFeedlyServer.Entities.Entities;
 
-namespace Repository
+namespace MyFeedlyServer.Repository
 {
     public class FeedRepository : RepositoryBase<Feed>, IFeedRepository
     {

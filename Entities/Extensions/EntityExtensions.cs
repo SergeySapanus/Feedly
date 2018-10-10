@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using Entities.Contracts;
+using MyFeedlyServer.Entities.Contracts;
 
-namespace Entities.Extensions
+namespace MyFeedlyServer.Entities.Extensions
 {
     public static class EntityExtensions
     {

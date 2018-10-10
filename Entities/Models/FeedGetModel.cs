@@ -1,4 +1,6 @@
-﻿namespace Entities.Models
+﻿using MyFeedlyServer.Entities.Entities;
+
+namespace MyFeedlyServer.Entities.Models
 {
     public class FeedGetModel : EntityModel<Feed>
     {

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Contracts;
-using Entities;
-using Entities.Contracts;
 using Microsoft.SyndicationFeed;
+using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Entities.Contracts;
+using MyFeedlyServer.Entities.Entities;
 
-namespace SyndicationService
+namespace MyFeedlyServer.SyndicationService
 {
     public class SyndicationManager : ISyndicationManager
     {

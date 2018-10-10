@@ -1,10 +1,11 @@
-﻿using Entities;
-using Entities.Extensions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Contracts.Repositories.Entities;
+using MyFeedlyServer.Entities;
+using MyFeedlyServer.Entities.Entities;
+using MyFeedlyServer.Entities.Extensions;
 
-namespace Repository
+namespace MyFeedlyServer.Repository
 {
     public class UserRepository : RepositoryBase<User>, IUserRepository
     {

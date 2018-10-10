@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Entities.Contracts;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using MyFeedlyServer.Entities.Contracts;
 
-namespace Entities
+namespace MyFeedlyServer.Entities.Entities
 {
     [Table("CollectionsFeeds")]
     public class CollectionFeed : IEntity

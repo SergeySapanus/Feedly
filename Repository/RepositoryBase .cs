@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Contracts;
 using Contracts.Repositories;
-using Entities;
+using MyFeedlyServer.Entities;
 
-namespace Repository
+namespace MyFeedlyServer.Repository
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {

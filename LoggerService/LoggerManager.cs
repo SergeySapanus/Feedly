@@ -1,7 +1,7 @@
-﻿using Contracts;
+﻿using MyFeedlyServer.Contracts;
 using NLog;
 
-namespace LoggerService
+namespace MyFeedlyServer.LoggerService
 {
     public class LoggerManager : ILoggerManager
     {

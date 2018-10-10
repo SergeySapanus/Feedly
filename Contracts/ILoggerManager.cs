@@ -1,4 +1,4 @@
-﻿namespace Contracts
+﻿namespace MyFeedlyServer.Contracts
 {
     public interface ILoggerManager
     {

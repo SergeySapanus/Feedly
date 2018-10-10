@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Entities.Models
+namespace MyFeedlyServer.Entities.Models
 {
     public class ErrorDetails
     {

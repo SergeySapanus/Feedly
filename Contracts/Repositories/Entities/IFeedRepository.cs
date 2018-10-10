@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Entities;
+using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Entities.Entities;
 
 namespace Contracts.Repositories.Entities
 {

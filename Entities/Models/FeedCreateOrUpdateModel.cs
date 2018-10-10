@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MyFeedlyServer.Entities.Entities;
 
-namespace Entities.Models
+namespace MyFeedlyServer.Entities.Models
 {
     public class FeedCreateOrUpdateModel : EntityModel<Feed>
     {

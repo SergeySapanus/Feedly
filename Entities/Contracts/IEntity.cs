@@ -1,4 +1,4 @@
-﻿namespace Entities.Contracts
+﻿namespace MyFeedlyServer.Entities.Contracts
 {
     public interface IEntity
     {

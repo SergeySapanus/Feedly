@@ -1,4 +1,4 @@
-﻿namespace SyndicationService
+﻿namespace MyFeedlyServer.SyndicationService
 {
     enum SyndicationFeedType
     {

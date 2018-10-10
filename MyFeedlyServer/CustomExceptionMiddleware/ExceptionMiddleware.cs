@@ -2,8 +2,9 @@
 using System.Net;
 using System.Threading.Tasks;
 using Contracts;
-using Entities.Models;
 using Microsoft.AspNetCore.Http;
+using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Entities.Models;
 
 namespace MyFeedlyServer.CustomExceptionMiddleware
 {

@@ -1,8 +1,6 @@
 ﻿using System.Text;
 using Contracts;
 using Contracts.Repositories;
-using Entities;
-using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using MyFeedlyServer.Contracts;
 using MyFeedlyServer.CustomExceptionMiddleware;
-using Repository;
-using SyndicationService;
+using MyFeedlyServer.Entities;
+using MyFeedlyServer.LoggerService;
+using MyFeedlyServer.Repository;
+using MyFeedlyServer.SyndicationService;
 
 namespace MyFeedlyServer.Extensions
 {
@@ -37,7 +38,7 @@ namespace MyFeedlyServer.Extensions
         {
             services.Configure<IISOptions>(options =>
             {
-
+                
             });
         }
 

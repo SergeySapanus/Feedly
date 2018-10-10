@@ -1,7 +1,8 @@
 ﻿using Contracts.Repositories.Entities;
-using Entities;
+using MyFeedlyServer.Entities;
+using MyFeedlyServer.Entities.Entities;
 
-namespace Repository
+namespace MyFeedlyServer.Repository
 {
     public class NewsRepository : RepositoryBase<News>, INewsRepository
     {

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MyFeedlyServer.Entities.Entities;
 
-namespace Entities.Models
+namespace MyFeedlyServer.Entities.Models
 {
     public class UserWithCollectionsGetModel : UserGetModel
     {

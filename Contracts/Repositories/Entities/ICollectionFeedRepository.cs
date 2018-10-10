@@ -1,4 +1,4 @@
-﻿using Entities;
+﻿using MyFeedlyServer.Entities.Entities;
 
 namespace Contracts.Repositories.Entities
 {

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Entities.Contracts;
-using Entities.Extensions;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using MyFeedlyServer.Entities.Contracts;
+using MyFeedlyServer.Entities.Extensions;
 
-namespace Entities
+namespace MyFeedlyServer.Entities.Entities
 {
     [Table("Feeds")]
     public class Feed : IUriEntity, IEntity

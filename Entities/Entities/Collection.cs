@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Entities.Contracts;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using MyFeedlyServer.Entities.Contracts;
 
-namespace Entities
+namespace MyFeedlyServer.Entities.Entities
 {
     [Table("Collections")]
     public class Collection: IEntity

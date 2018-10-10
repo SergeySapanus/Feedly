@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Entities;
 using Microsoft.SyndicationFeed;
+using MyFeedlyServer.Entities.Entities;
 
-namespace SyndicationService
+namespace MyFeedlyServer.SyndicationService
 {
     static class SyndicationItemExtensions
     {

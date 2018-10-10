@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using Contracts.Repositories.Entities;
-using Entities;
+using MyFeedlyServer.Entities;
+using MyFeedlyServer.Entities.Entities;
 
-namespace Repository
+namespace MyFeedlyServer.Repository
 {
     public class CollectionRepository : RepositoryBase<Collection>, ICollectionRepository
     {

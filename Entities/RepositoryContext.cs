@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyFeedlyServer.Entities.Entities;
 
-namespace Entities
+namespace MyFeedlyServer.Entities
 {
     public class RepositoryContext : DbContext
     {
