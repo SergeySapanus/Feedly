@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Contracts;
 using Contracts.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

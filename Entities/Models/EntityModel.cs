@@ -21,7 +21,7 @@ namespace MyFeedlyServer.Entities.Models
 
         protected T Entity { get; set; }
 
-        public bool IsNull() => ReferenceEquals(Entity, null);
+        public bool IsNullEntity() => ReferenceEquals(Entity, null);
 
         public virtual T GetEntity() => Entity;
     }
