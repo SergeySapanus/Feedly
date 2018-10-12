@@ -31,7 +31,7 @@ namespace MyFeedlyServer.Tests
             // arrange
 
             // act
-            var act = _fixture.AuthController.Login(null);
+            var act = _fixture.Controller.Login(null);
 
             // assert
             Assert.IsType<BadRequestObjectResult>(act);
@@ -44,16 +44,18 @@ namespace MyFeedlyServer.Tests
             // arrange
             var user = _fixture.Fixture.Create<User>();
 
-            _fixture.UserRepository.Setup(r => r.GetUserByName(user.Name)).Returns((User)null);
+            _fixture.UserRepository.Setup(r => r.GetUserByName(user.Name)).Returns((User)null).Verifiable();
 
             var model = new UserCreateOrUpdateModel(user);
 
             // act
-            var act = _fixture.AuthController.Login(model);
+            var act = _fixture.Controller.Login(model);
 
             // assert
             Assert.IsType<NotFoundResult>(act);
             Assert.Equal((int)HttpStatusCode.NotFound, ((NotFoundResult)act).StatusCode);
+
+            _fixture.UserRepository.VerifyAll();
         }
 
         [Fact]
@@ -61,18 +63,20 @@ namespace MyFeedlyServer.Tests
         {
             // arrange
             var user = _fixture.Fixture.Create<User>();
-
-            _fixture.UserRepository.Setup(r => r.GetUserByName(user.Name)).Returns(user);
-
             var invalidUser = _fixture.Fixture.Create<User>();
+
+            _fixture.UserRepository.Setup(r => r.GetUserByName(invalidUser.Name)).Returns(user).Verifiable();
+
             var model = new UserCreateOrUpdateModel(invalidUser);
 
             // act
-            var act = _fixture.AuthController.Login(model);
+            var act = _fixture.Controller.Login(model);
 
             // assert
             Assert.IsType<UnauthorizedResult>(act);
             Assert.Equal((int)HttpStatusCode.Unauthorized, ((UnauthorizedResult)act).StatusCode);
+
+            _fixture.UserRepository.VerifyAll();
         }
 
         [Fact]
@@ -81,17 +85,19 @@ namespace MyFeedlyServer.Tests
             // arrange
             var user = _fixture.Fixture.Create<User>();
 
-            _fixture.UserRepository.Setup(r => r.GetUserByName(user.Name)).Returns(user);
+            _fixture.UserRepository.Setup(r => r.GetUserByName(user.Name)).Returns(user).Verifiable();
 
             var model = new UserCreateOrUpdateModel(user);
 
             // act
-            var act = _fixture.AuthController.Login(model);
+            var act = _fixture.Controller.Login(model);
 
             // assert
             Assert.IsType<OkObjectResult>(act);
             Assert.Equal((int)HttpStatusCode.OK, ((OkObjectResult)act).StatusCode);
             Assert.NotNull(((OkObjectResult)act).Value.ConvertToDynamicByJsonConvert()?.Token);
+
+            _fixture.UserRepository.VerifyAll();
         }
     }
 
@@ -99,7 +105,7 @@ namespace MyFeedlyServer.Tests
     {
         public IFixture Fixture { get; set; }
         public Mock<IUserRepository> UserRepository { get; set; }
-        public AuthController AuthController { get; set; }
+        public AuthController Controller { get; set; }
 
         public AuthControllerFixture()
         {
@@ -114,7 +120,7 @@ namespace MyFeedlyServer.Tests
             repositoryWrapper.Setup(r => r.User).Returns(UserRepository.Object);
 
             var logger = Fixture.Freeze<Mock<ILoggerManager>>();
-            AuthController = new AuthController(logger.Object, repositoryWrapper.Object);
+            Controller = new AuthController(logger.Object, repositoryWrapper.Object);
         }
 
         public void Dispose()

@@ -12,7 +12,7 @@ using MyFeedlyServer.Resources;
 namespace MyFeedlyServer.Controllers
 {
     [Route("api/user")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly ILoggerManager _logger;
         private readonly IRepositoryWrapper _repository;
@@ -36,7 +36,7 @@ namespace MyFeedlyServer.Controllers
         [HttpGet]
         public IActionResult GetUser()
         {
-            var autorizedUserId = this.GetAutorizedUserId();
+            var autorizedUserId = AuthorizedUserId;
 
             if (!autorizedUserId.HasValue)
             {
@@ -59,7 +59,7 @@ namespace MyFeedlyServer.Controllers
         [HttpGet("collection")]
         public IActionResult GetUserWithCollections()
         {
-            var autorizedUserId = this.GetAutorizedUserId();
+            var autorizedUserId = AuthorizedUserId;
 
             if (!autorizedUserId.HasValue)
             {
@@ -103,7 +103,7 @@ namespace MyFeedlyServer.Controllers
                 return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
 
-            var autorizedUserId = this.GetAutorizedUserId();
+            var autorizedUserId = AuthorizedUserId;
 
             if (!autorizedUserId.HasValue)
             {
@@ -127,7 +127,7 @@ namespace MyFeedlyServer.Controllers
         [HttpDelete]
         public IActionResult DeleteUser()
         {
-            var autorizedUserId = this.GetAutorizedUserId();
+            var autorizedUserId = AuthorizedUserId;
 
             if (!autorizedUserId.HasValue)
             {

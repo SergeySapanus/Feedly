@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Contracts;
 using Contracts.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +12,7 @@ using MyFeedlyServer.Resources;
 namespace MyFeedlyServer.Controllers
 {
     [Route("api/feed")]
-    public class FeedController : Controller
+    public class FeedController : BaseController
     {
         private readonly ILoggerManager _logger;
         private readonly IRepositoryWrapper _repository;
@@ -58,7 +57,7 @@ namespace MyFeedlyServer.Controllers
                 return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
 
-            var autorizedUserId = this.GetAutorizedUserId();
+            var autorizedUserId = AuthorizedUserId;
 
             if (!autorizedUserId.HasValue)
             {

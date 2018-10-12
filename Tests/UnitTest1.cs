@@ -10,11 +10,11 @@ namespace MyFeedlyServer.Tests
 {
     public class UnitTest1
     {
-        [Theory]
-        [InlineData(3)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [MemberData(nameof(AgeHeightWeightData))]
+        //[Theory]
+        //[InlineData(3)]
+        //[InlineData(5)]
+        //[InlineData(6)]
+        //[MemberData(nameof(AgeHeightWeightData))]
         public void MyFirstTheory(int value)
         {
             Assert.True(IsOdd(value));
@@ -31,13 +31,13 @@ namespace MyFeedlyServer.Tests
             return value % 2 == 1;
         }
 
-        [Fact]
+        //[Fact]
         public void PassingTest()
         {
             Assert.Equal(4, Add(2, 2));
         }
 
-        [Fact]
+        //[Fact]
         public void FailingTest()
         {
             Assert.Equal(5, Add(2, 2));
@@ -110,13 +110,13 @@ namespace xUnitFixturesLifeCycle
             $"TestContainerOne(ClassFixture classFixture) : {classFixture}".Show();
         }
 
-        [Fact]
+        //[Fact]
         public void TestOne()
         {
             "TestContainerOne : TestOne".Show();
         }
 
-        [Fact]
+        //[Fact]
         public void TestTwo()
         {
             "TestContainerOne : TestTwo".Show();
@@ -136,7 +136,7 @@ namespace xUnitFixturesLifeCycle
             "TestContainerTwo : ctor".Show();
         }
 
-        [Fact]
+        //[Fact]
         public void TestOne()
         {
             "TestContainerTwo : TestOne".Show();
@@ -150,13 +150,13 @@ namespace xUnitFixturesLifeCycle
 
     public class TestContainerThree
     {
-        [Fact]
+        //[Fact]
         public void TestOne()
         {
             "TestContainerThree : TestOne".Show();
         }
 
-        [Fact]
+        //[Fact]
         public void ShouldGetItemWithSameId()
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
@@ -169,7 +169,7 @@ namespace xUnitFixturesLifeCycle
             Assert.Equal(expected, sut.Get(expected).Key);
         }
 
-        [Fact]
+        //[Fact]
         public void NameIsCorrect()
         {
             // Fixture setup
@@ -186,7 +186,7 @@ namespace xUnitFixturesLifeCycle
             // Teardown
         }
 
-        [Fact]
+        //[Fact]
         public void NameIsCorrect_Freeze()
         {
             // Fixture setup

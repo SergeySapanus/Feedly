@@ -7,7 +7,6 @@ using Contracts.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFeedlyServer.Contracts;
-using MyFeedlyServer.Entities.Contracts;
 using MyFeedlyServer.Entities.Entities;
 using MyFeedlyServer.Entities.Extensions;
 using MyFeedlyServer.Entities.Models;
@@ -17,7 +16,7 @@ using MyFeedlyServer.Resources;
 namespace MyFeedlyServer.Controllers
 {
     [Route("api/auth")]
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
         private readonly ILoggerManager _logger;
         private readonly IRepositoryWrapper _repository;
