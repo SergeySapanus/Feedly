@@ -1,12 +1,12 @@
 ﻿using System.Linq;
-using Contracts.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.Entities.Entities;
 using MyFeedlyServer.Entities.Extensions;
 using MyFeedlyServer.Entities.Models;
-using MyFeedlyServer.Extensions;
+using MyFeedlyServer.Filters;
 using MyFeedlyServer.Resources;
 
 namespace MyFeedlyServer.Controllers
@@ -73,16 +73,11 @@ namespace MyFeedlyServer.Controllers
             return Ok(result);
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpPost]
         public IActionResult CreateCollection([FromBody]CollectionCreateOrUpdateModel collection)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(collection), ModelState.GetAllErrors()));
-                return BadRequest(Resource.Status400BadRequestInvalidModel);
-            }
-
             var autorizedUserId = AuthorizedUserId;
 
             if (!autorizedUserId.HasValue || !autorizedUserId.Value.Equals(collection.UserId))

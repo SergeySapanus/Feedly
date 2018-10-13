@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Contracts.Repositories.Entities;
+using System.Threading.Tasks;
+using MyFeedlyServer.Contracts.Repositories.Entities;
 using MyFeedlyServer.Entities;
 using MyFeedlyServer.Entities.Entities;
 using MyFeedlyServer.Entities.Extensions;
@@ -49,6 +50,43 @@ namespace MyFeedlyServer.Repository
         {
             Delete(user);
             Save();
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            var users = await FindAllAsync();
+            return users.OrderBy(u => u.Name);
+        }
+
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            var users = await FindByConditionAync(u => u.Id.Equals(id));
+            return users.FirstOrDefault();
+        }
+
+        public async Task<User> GetUserByNameAsync(string name)
+        {
+            var users = await FindByConditionAync(u => u.Name.Equals(name));
+            return users.FirstOrDefault();
+        }
+
+        public async Task CreateUserAsync(User user)
+        {
+            Create(user);
+            await SaveAsync();
+        }
+
+        public async Task UpdateUserAsync(User dbUser, User user)
+        {
+            dbUser.Map(user);
+            Update(dbUser);
+            await SaveAsync();
+        }
+
+        public async Task DeleteUserAsync(User user)
+        {
+            Delete(user);
+            await SaveAsync();
         }
     }
 }

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Contracts.Repositories;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.Entities;
 
 namespace MyFeedlyServer.Repository
@@ -44,6 +46,21 @@ namespace MyFeedlyServer.Repository
         public void Save()
         {
             RepositoryContext.SaveChanges();
+        }
+
+        public async Task<IEnumerable<T>> FindAllAsync()
+        {
+            return await RepositoryContext.Set<T>().ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> FindByConditionAync(Expression<Func<T, bool>> expression)
+        {
+            return await RepositoryContext.Set<T>().Where(expression).ToListAsync();
+        }
+
+        public async Task SaveAsync()
+        {
+            await RepositoryContext.SaveChangesAsync();
         }
     }
 }

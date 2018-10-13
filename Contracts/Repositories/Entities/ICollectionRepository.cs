@@ -1,6 +1,6 @@
 ﻿using MyFeedlyServer.Entities.Entities;
 
-namespace Contracts.Repositories.Entities
+namespace MyFeedlyServer.Contracts.Repositories.Entities
 {
     public interface ICollectionRepository : IRepositoryBase<Collection>
     {

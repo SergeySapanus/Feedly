@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using Contracts;
 using Microsoft.AspNetCore.Http;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Entities.Models;

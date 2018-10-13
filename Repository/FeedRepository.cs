@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Contracts.Repositories.Entities;
 using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Contracts.Repositories.Entities;
 using MyFeedlyServer.Entities;
 using MyFeedlyServer.Entities.Entities;
 

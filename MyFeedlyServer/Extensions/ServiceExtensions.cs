@@ -1,6 +1,4 @@
 ﻿using System.Text;
-using Contracts;
-using Contracts.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.CustomExceptionMiddleware;
 using MyFeedlyServer.Entities;
+using MyFeedlyServer.Filters;
 using MyFeedlyServer.LoggerService;
 using MyFeedlyServer.Repository;
 using MyFeedlyServer.SyndicationService;
@@ -38,7 +38,7 @@ namespace MyFeedlyServer.Extensions
         {
             services.Configure<IISOptions>(options =>
             {
-                
+
             });
         }
 
@@ -62,14 +62,20 @@ namespace MyFeedlyServer.Extensions
         {
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             services.AddScoped<ISyndicationManager, SyndicationManager>();
+            services.AddScoped<ValidationFilterAttribute>();
         }
 
         public static void ConfigureMvc(this IServiceCollection services)
         {
             services
-                .AddMvc()
+                .AddMvc(options =>
+                {
+                    
+                })
                 .AddJsonOptions(options =>
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

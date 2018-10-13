@@ -1,12 +1,12 @@
 ﻿using System.Linq;
-using Contracts.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.Entities.Entities;
 using MyFeedlyServer.Entities.Extensions;
 using MyFeedlyServer.Entities.Models;
-using MyFeedlyServer.Extensions;
+using MyFeedlyServer.Filters;
 using MyFeedlyServer.Resources;
 
 namespace MyFeedlyServer.Controllers
@@ -79,30 +79,20 @@ namespace MyFeedlyServer.Controllers
             return Ok(user);
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPost]
         public IActionResult CreateUser([FromBody]UserCreateOrUpdateModel user)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
-                return BadRequest(Resource.Status400BadRequestInvalidModel);
-            }
-
             _repository.User.CreateUser(user.GetEntity());
 
             return CreatedAtRoute(nameof(GetAllUsers), new { id = user.Id }, new EntityModel<User>(user.GetEntity()));
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpPut]
         public IActionResult UpdateUser([FromBody]UserCreateOrUpdateModel user)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(user), ModelState.GetAllErrors()));
-                return BadRequest(Resource.Status400BadRequestInvalidModel);
-            }
-
             var autorizedUserId = AuthorizedUserId;
 
             if (!autorizedUserId.HasValue)
@@ -119,7 +109,7 @@ namespace MyFeedlyServer.Controllers
             }
 
             _repository.User.UpdateUser(dbUser, user.GetEntity());
-            
+
             return NoContent();
         }
 

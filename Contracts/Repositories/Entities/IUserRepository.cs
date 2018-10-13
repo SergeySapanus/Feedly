@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Contracts.Repositories;
+using System.Threading.Tasks;
 using MyFeedlyServer.Entities.Entities;
 
-namespace Contracts.Repositories.Entities
+namespace MyFeedlyServer.Contracts.Repositories.Entities
 {
     public interface IUserRepository : IRepositoryBase<User>
     {
@@ -13,5 +13,13 @@ namespace Contracts.Repositories.Entities
         void CreateUser(User user);
         void UpdateUser(User dbUser, User user);
         void DeleteUser(User user);
+
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User> GetUserByIdAsync(int id);
+        Task<User> GetUserByNameAsync(string name);
+
+        Task CreateUserAsync(User user);
+        Task UpdateUserAsync(User dbUser, User user);
+        Task DeleteUserAsync(User user);
     }
 }

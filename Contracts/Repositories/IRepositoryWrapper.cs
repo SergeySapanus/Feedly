@@ -1,6 +1,6 @@
-﻿using Contracts.Repositories.Entities;
+﻿using MyFeedlyServer.Contracts.Repositories.Entities;
 
-namespace Contracts.Repositories
+namespace MyFeedlyServer.Contracts.Repositories
 {
     public interface IRepositoryWrapper
     {

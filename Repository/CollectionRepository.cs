@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Contracts.Repositories.Entities;
+using MyFeedlyServer.Contracts.Repositories.Entities;
 using MyFeedlyServer.Entities;
 using MyFeedlyServer.Entities.Entities;
 

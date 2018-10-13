@@ -1,5 +1,5 @@
-﻿using Contracts.Repositories;
-using Contracts.Repositories.Entities;
+﻿using MyFeedlyServer.Contracts.Repositories;
+using MyFeedlyServer.Contracts.Repositories.Entities;
 using MyFeedlyServer.Entities;
 
 namespace MyFeedlyServer.Repository
