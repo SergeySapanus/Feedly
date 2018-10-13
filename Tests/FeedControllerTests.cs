@@ -52,7 +52,7 @@ namespace MyFeedlyServer.Tests
         }
 
         [Fact]
-        public void GetFeedById_WithValidCredentials_ShouldOkResult()
+        public void GetFeedById_WithValidModel_ShouldOkResult()
         {
             // arrange
             var feed = _fixture.Fixture.Create<Feed>();
