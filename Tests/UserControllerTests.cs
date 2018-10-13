@@ -28,7 +28,7 @@ namespace MyFeedlyServer.Tests
         [Theory]
         [InlineData(3)]
         [InlineData(10)]
-        public void GetAllUsers_GetResult_ShouldContainsAllUsers(int usersCount)
+        public void GetAllUsers_WithoutAuthorizedUser_ShouldContainsAllUsers(int usersCount)
         {
             // arrange
             var users = _fixture.Fixture.CreateMany<User>(usersCount).ToArray();
@@ -50,14 +50,11 @@ namespace MyFeedlyServer.Tests
             _fixture.UserRepository.VerifyAll();
         }
 
-        [Theory]
-        [InlineData(3, 1)]
-        [InlineData(10, 4)]
-        public void GetUser_GetResult_ShouldContainsAuthorizedUser(int usersCount, int authorizedUserIndex)
+        [Fact]
+        public void GetUser_WithAuthorizedUser_ShouldContainsAuthorizedUser()
         {
             // arrange
-            var users = _fixture.Fixture.CreateMany<User>(usersCount).ToArray();
-            var authorizedUser = users[authorizedUserIndex];
+            var authorizedUser = _fixture.Fixture.Create<User>();
 
             _fixture.UserRepository.Setup(u => u.GetUserById(authorizedUser.Id)).Returns(authorizedUser).Verifiable();
             _fixture.SetAuthorizedUserId(authorizedUser.Id);
@@ -71,14 +68,11 @@ namespace MyFeedlyServer.Tests
             _fixture.UserRepository.VerifyAll();
         }
 
-        [Theory]
-        [InlineData(5, 2)]
-        [InlineData(8, 7)]
-        public void GetUserWithCollections_GetResult_ShouldContainsAuthorizedUserWithCollections(int usersCount, int authorizedUserIndex)
+        [Fact]
+        public void GetUserWithCollections_WithAuthorizedUser_ShouldContainsAuthorizedUserWithCollections()
         {
             // arrange
-            var users = _fixture.Fixture.CreateMany<User>(usersCount).ToArray();
-            var authorizedUser = users[authorizedUserIndex];
+            var authorizedUser = _fixture.Fixture.Create<User>();
 
             _fixture.UserRepository.Setup(u => u.GetUserById(authorizedUser.Id)).Returns(authorizedUser).Verifiable();
             _fixture.SetAuthorizedUserId(authorizedUser.Id);
@@ -116,7 +110,7 @@ namespace MyFeedlyServer.Tests
         }
 
         [Fact]
-        public void UpdateUser_WithValidModel_ShouldNoContentResult()
+        public void UpdateUser_WithValidModelAndAuthorizedUser_ShouldNoContentResult()
         {
             // arrange
             var user = _fixture.Fixture.Create<User>();
@@ -131,6 +125,27 @@ namespace MyFeedlyServer.Tests
 
             // act
             var act = (NoContentResult)_fixture.Controller.UpdateUser(model);
+
+            // assert
+            Assert.NotNull(act);
+            Assert.Equal((int)HttpStatusCode.NoContent, act.StatusCode);
+
+            _fixture.UserRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void DeleteUser_WithValidModelAndAuthorizedUser_ShouldNoContentResult()
+        {
+            // arrange
+            var user = _fixture.Fixture.Create<User>();
+
+            _fixture.SetAuthorizedUserId(user.Id);
+
+            _fixture.UserRepository.Setup(r => r.GetUserById(user.Id)).Returns(user).Verifiable();
+            _fixture.UserRepository.Setup(r => r.DeleteUser(user)).Verifiable();
+
+            // act
+            var act = (NoContentResult)_fixture.Controller.DeleteUser();
 
             // assert
             Assert.NotNull(act);
