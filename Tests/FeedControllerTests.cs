@@ -75,7 +75,7 @@ namespace MyFeedlyServer.Tests
             // arrange
             var authorizedUser = _fixture.Fixture.Create<User>();
             var feed = _fixture.Fixture.Create<Feed>();
-            var collection = _fixture.Fixture.Create<Collection>(); ;
+            var collection = _fixture.Fixture.Create<Collection>();
 
             var model = new FeedCreateOrUpdateModel(feed);
 
@@ -103,7 +103,7 @@ namespace MyFeedlyServer.Tests
             // arrange
             var authorizedUser = _fixture.Fixture.Create<User>();
             var feed = _fixture.Fixture.Create<Feed>();
-            var collection = _fixture.Fixture.Create<Collection>(); ;
+            var collection = _fixture.Fixture.Create<Collection>();
 
             var model = new FeedCreateOrUpdateModel(feed);
 
@@ -158,7 +158,7 @@ namespace MyFeedlyServer.Tests
             _controller = new FeedControllerMock(logger.Object, repositoryWrapper.Object);
         }
 
-        public void SetAuthorizedUserId(int? authorizedUserId)
+        public void SetAuthorizedUserId(int authorizedUserId)
         {
             _controller.SetAuthorizedUserId(authorizedUserId);
         }
@@ -169,18 +169,18 @@ namespace MyFeedlyServer.Tests
 
         private class FeedControllerMock : FeedController
         {
-            private int? _authorizedUserId;
+            private int _authorizedUserId;
 
             public FeedControllerMock(ILoggerManager logger, IRepositoryWrapper repository) : base(logger, repository)
             {
             }
 
-            public void SetAuthorizedUserId(int? authorizedUserId)
+            public void SetAuthorizedUserId(int authorizedUserId)
             {
                 _authorizedUserId = authorizedUserId;
             }
 
-            protected override int? AuthorizedUserId => _authorizedUserId;
+            protected override int AuthorizedUserId => _authorizedUserId;
         }
     }
 }

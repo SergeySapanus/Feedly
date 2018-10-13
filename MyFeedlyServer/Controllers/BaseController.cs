@@ -5,6 +5,16 @@ namespace MyFeedlyServer.Controllers
 {
     public abstract class BaseController : Controller
     {
-        protected virtual int? AuthorizedUserId => this.GetAuthorizedUserId();
+        protected virtual int AuthorizedUserId
+        {
+            get
+            {
+                var authorizedUserId = this.GetAuthorizedUserId();
+                if (authorizedUserId.HasValue)
+                    return authorizedUserId.Value;
+
+                return -1;
+            }
+        }
     }
 }

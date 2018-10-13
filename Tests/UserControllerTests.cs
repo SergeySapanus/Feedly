@@ -180,7 +180,7 @@ namespace MyFeedlyServer.Tests
             _controller = new UserControllerMock(logger.Object, repositoryWrapper.Object);
         }
 
-        public void SetAuthorizedUserId(int? authorizedUserId)
+        public void SetAuthorizedUserId(int authorizedUserId)
         {
             _controller.SetAuthorizedUserId(authorizedUserId);
         }
@@ -191,18 +191,18 @@ namespace MyFeedlyServer.Tests
 
         private class UserControllerMock : UserController
         {
-            private int? _authorizedUserId;
+            private int _authorizedUserId;
 
             public UserControllerMock(ILoggerManager logger, IRepositoryWrapper repository) : base(logger, repository)
             {
             }
 
-            public void SetAuthorizedUserId(int? authorizedUserId)
+            public void SetAuthorizedUserId(int authorizedUserId)
             {
                 _authorizedUserId = authorizedUserId;
             }
 
-            protected override int? AuthorizedUserId => _authorizedUserId;
+            protected override int AuthorizedUserId => _authorizedUserId;
         }
     }
 }

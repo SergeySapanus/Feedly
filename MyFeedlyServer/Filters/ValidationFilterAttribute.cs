@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MyFeedlyServer.Contracts;
+using MyFeedlyServer.Controllers;
 using MyFeedlyServer.Extensions;
 using MyFeedlyServer.Resources;
 
@@ -21,6 +22,16 @@ namespace MyFeedlyServer.Filters
             {
                 _logger.LogError(string.Format(Resource.LogErrorInvalidModel, context.Controller, context.ModelState.GetAllErrors()));
                 context.Result = new BadRequestObjectResult(context.ModelState);
+            }
+
+            if (context.Controller is BaseController controller)
+            {
+                var autorizedUserId = controller.GetAuthorizedUserId();
+                if (!autorizedUserId.HasValue)
+                {
+                    _logger.LogError(Resource.LogErrorUserIsNotAutorized);
+                    context.Result = new UnauthorizedResult();
+                }
             }
         }
 

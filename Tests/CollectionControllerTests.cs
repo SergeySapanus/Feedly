@@ -146,7 +146,7 @@ namespace MyFeedlyServer.Tests
             _controller = new CollectionControllerMock(logger.Object, repositoryWrapper.Object, SyndicationManager.Object);
         }
 
-        public void SetAuthorizedUserId(int? authorizedUserId)
+        public void SetAuthorizedUserId(int authorizedUserId)
         {
             _controller.SetAuthorizedUserId(authorizedUserId);
         }
@@ -157,18 +157,18 @@ namespace MyFeedlyServer.Tests
 
         private class CollectionControllerMock : CollectionController
         {
-            private int? _authorizedUserId;
+            private int _authorizedUserId;
 
             public CollectionControllerMock(ILoggerManager logger, IRepositoryWrapper repository, ISyndicationManager syndicationManager) : base(logger, repository, syndicationManager)
             {
             }
 
-            public void SetAuthorizedUserId(int? authorizedUserId)
+            public void SetAuthorizedUserId(int authorizedUserId)
             {
                 _authorizedUserId = authorizedUserId;
             }
 
-            protected override int? AuthorizedUserId => _authorizedUserId;
+            protected override int AuthorizedUserId => _authorizedUserId;
         }
     }
 }

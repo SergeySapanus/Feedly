@@ -54,13 +54,7 @@ namespace MyFeedlyServer.Controllers
         {
             var autorizedUserId = AuthorizedUserId;
 
-            if (!autorizedUserId.HasValue)
-            {
-                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
-                return Unauthorized();
-            }
-
-            var collection = _repository.Collection.GetCollectionByIdAndUserId(feedModel.CollectionId, autorizedUserId.Value);
+            var collection = _repository.Collection.GetCollectionByIdAndUserId(feedModel.CollectionId, autorizedUserId);
             if (collection.IsNull())
             {
                 _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(feedModel.CollectionId), feedModel.CollectionId));

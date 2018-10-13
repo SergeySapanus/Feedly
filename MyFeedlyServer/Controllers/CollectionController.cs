@@ -25,19 +25,14 @@ namespace MyFeedlyServer.Controllers
             _syndicationManager = syndicationManager;
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpGet("{id}", Name = nameof(GetCollectionById))]
         public IActionResult GetCollectionById(int id)
         {
             var autorizedUserId = AuthorizedUserId;
 
-            if (!autorizedUserId.HasValue)
-            {
-                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
-                return Unauthorized();
-            }
-
-            var collection = new CollectionGetModel(_repository.Collection.GetCollectionByIdAndUserId(id, autorizedUserId.Value));
+            var collection = new CollectionGetModel(_repository.Collection.GetCollectionByIdAndUserId(id, autorizedUserId));
             if (collection.IsNull())
             {
                 _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(id), id));
@@ -48,19 +43,14 @@ namespace MyFeedlyServer.Controllers
             return Ok(collection);
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpGet("{id}/news", Name = nameof(GetNewsByCollectionId))]
         public IActionResult GetNewsByCollectionId(int id)
         {
             var autorizedUserId = AuthorizedUserId;
 
-            if (!autorizedUserId.HasValue)
-            {
-                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
-                return Unauthorized();
-            }
-
-            var collection = _repository.Collection.GetCollectionByIdAndUserId(id, autorizedUserId.Value);
+            var collection = _repository.Collection.GetCollectionByIdAndUserId(id, autorizedUserId);
             if (collection.IsNull())
             {
                 _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(id), id));
@@ -78,9 +68,7 @@ namespace MyFeedlyServer.Controllers
         [HttpPost]
         public IActionResult CreateCollection([FromBody]CollectionCreateOrUpdateModel collection)
         {
-            var autorizedUserId = AuthorizedUserId;
-
-            if (!autorizedUserId.HasValue || !autorizedUserId.Value.Equals(collection.UserId))
+            if (!AuthorizedUserId.Equals(collection.UserId))
             {
                 _logger.LogError(Resource.LogErrorUserIsNotAutorized);
                 return Unauthorized();

@@ -32,22 +32,17 @@ namespace MyFeedlyServer.Controllers
             return Ok(users);
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpGet]
         public IActionResult GetUser()
         {
             var autorizedUserId = AuthorizedUserId;
 
-            if (!autorizedUserId.HasValue)
-            {
-                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
-                return Unauthorized();
-            }
-
-            var user = new UserGetModel(_repository.User.GetUserById(autorizedUserId.Value));
+            var user = new UserGetModel(_repository.User.GetUserById(autorizedUserId));
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId.Value));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId));
                 return NotFound();
             }
 
@@ -55,20 +50,14 @@ namespace MyFeedlyServer.Controllers
             return Ok(user);
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpGet("collection")]
         public IActionResult GetUserWithCollections()
         {
             var autorizedUserId = AuthorizedUserId;
 
-            if (!autorizedUserId.HasValue)
-            {
-                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
-                return Unauthorized();
-            }
-
-            var user = new UserWithCollectionsGetModel(_repository.User.GetUserById(autorizedUserId.Value));
-
+            var user = new UserWithCollectionsGetModel(_repository.User.GetUserById(autorizedUserId));
             if (user.IsNull())
             {
                 _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId));
@@ -95,16 +84,10 @@ namespace MyFeedlyServer.Controllers
         {
             var autorizedUserId = AuthorizedUserId;
 
-            if (!autorizedUserId.HasValue)
-            {
-                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
-                return Unauthorized();
-            }
-
-            var dbUser = _repository.User.GetUserById(autorizedUserId.Value);
+            var dbUser = _repository.User.GetUserById(autorizedUserId);
             if (dbUser.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId.Value));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId));
                 return NotFound();
             }
 
@@ -119,16 +102,10 @@ namespace MyFeedlyServer.Controllers
         {
             var autorizedUserId = AuthorizedUserId;
 
-            if (!autorizedUserId.HasValue)
-            {
-                _logger.LogError(Resource.LogErrorUserIsNotAutorized);
-                return Unauthorized();
-            }
-
-            var user = _repository.User.GetUserById(autorizedUserId.Value);
+            var user = _repository.User.GetUserById(autorizedUserId);
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId.Value));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(autorizedUserId), autorizedUserId));
                 return NotFound();
             }
 
