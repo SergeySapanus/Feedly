@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyFeedlyServer.Contracts;
@@ -24,11 +25,13 @@ namespace MyFeedlyServer.Controllers
     {
         private readonly ILoggerManager _logger;
         private readonly IRepositoryWrapper _repository;
+        private readonly IDataProtector _dataProtector;
 
-        public AuthController(ILoggerManager logger, IRepositoryWrapper repository)
+        public AuthController(ILoggerManager logger, IRepositoryWrapper repository, IDataProtectionProvider dataProtectionProvider)
         {
             _logger = logger;
             _repository = repository;
+            _dataProtector = dataProtectionProvider.CreateProtector(GetDataProtectionPurpose());
         }
 
         [SwaggerOperation(
@@ -61,7 +64,7 @@ namespace MyFeedlyServer.Controllers
                 return NotFound();
             }
 
-            if (model.Name == user.Name && model.Password == user.Password)
+            if (model.Name == user.Name && model.Password == _dataProtector.Unprotect(user.Password))
                 return Ok(new AuthGetModel(GetToken(user)));
 
             return Unauthorized();

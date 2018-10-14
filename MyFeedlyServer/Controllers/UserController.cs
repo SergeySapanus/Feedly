@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
@@ -19,11 +20,13 @@ namespace MyFeedlyServer.Controllers
     {
         private readonly ILoggerManager _logger;
         private readonly IRepositoryWrapper _repository;
+        private readonly IDataProtector _dataProtector;
 
-        public UserController(ILoggerManager logger, IRepositoryWrapper repository)
+        public UserController(ILoggerManager logger, IRepositoryWrapper repository, IDataProtectionProvider dataProtectionProvider)
         {
             _logger = logger;
             _repository = repository;
+            _dataProtector = dataProtectionProvider.CreateProtector(GetDataProtectionPurpose());
         }
 
         [SwaggerOperation(
@@ -103,9 +106,12 @@ namespace MyFeedlyServer.Controllers
         [HttpPost]
         public IActionResult CreateUser([FromBody]UserCreateOrUpdateModel user)
         {
-            _repository.User.CreateUser(user.GetEntity());
+            var entity = user.GetEntity();
+            entity.Password = _dataProtector.Protect(entity.Password);
 
-            return CreatedAtRoute(nameof(GetAllUsers), new { id = user.Id }, new EntityGetModel(user.GetEntity()));
+            _repository.User.CreateUser(entity);
+
+            return CreatedAtRoute(nameof(GetAllUsers), new { id = user.Id }, new EntityGetModel(entity));
         }
 
         [SwaggerOperation(
@@ -130,7 +136,10 @@ namespace MyFeedlyServer.Controllers
                 return NotFound();
             }
 
-            _repository.User.UpdateUser(dbUser, user.GetEntity());
+            var entity = user.GetEntity();
+            entity.Password = _dataProtector.Protect(entity.Password);
+
+            _repository.User.UpdateUser(dbUser, entity);
 
             return NoContent();
         }

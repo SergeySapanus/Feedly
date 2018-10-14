@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using AutoFixture;
 using AutoFixture.AutoMoq;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using MyFeedlyServer.Contracts;
@@ -83,6 +84,7 @@ namespace MyFeedlyServer.Tests
         {
             // arrange
             var user = _fixture.Fixture.Create<User>();
+            user.Password = string.Empty;
 
             _fixture.UserRepository.Setup(r => r.GetUserByName(user.Name)).Returns(user).Verifiable();
 
@@ -105,6 +107,7 @@ namespace MyFeedlyServer.Tests
         public IFixture Fixture { get; set; }
         public Mock<IUserRepository> UserRepository { get; set; }
         public AuthController Controller { get; set; }
+        public Mock<IDataProtector> DataProtector { get; set; }
 
         public AuthControllerFixture()
         {
@@ -118,8 +121,13 @@ namespace MyFeedlyServer.Tests
             var repositoryWrapper = Fixture.Freeze<Mock<IRepositoryWrapper>>();
             repositoryWrapper.Setup(r => r.User).Returns(UserRepository.Object);
 
+            DataProtector = Fixture.Freeze<Mock<IDataProtector>>();
+
+            var dataProtectionProvider = Fixture.Freeze<Mock<IDataProtectionProvider>>();
+            dataProtectionProvider.Setup(d => d.CreateProtector(It.IsAny<string>())).Returns(DataProtector.Object);
+
             var logger = Fixture.Freeze<Mock<ILoggerManager>>();
-            Controller = new AuthController(logger.Object, repositoryWrapper.Object);
+            Controller = new AuthController(logger.Object, repositoryWrapper.Object, dataProtectionProvider.Object);
         }
 
         public void Dispose()

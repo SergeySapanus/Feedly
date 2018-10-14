@@ -16,5 +16,10 @@ namespace MyFeedlyServer.Controllers
                 return -1;
             }
         }
+
+        protected string GetDataProtectionPurpose()
+        {
+            return typeof(BaseController).FullName;
+        }
     }
 }

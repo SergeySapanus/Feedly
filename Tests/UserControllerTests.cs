@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using AutoFixture;
 using AutoFixture.AutoMoq;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using MyFeedlyServer.Contracts;
@@ -161,6 +163,7 @@ namespace MyFeedlyServer.Tests
 
         public IFixture Fixture { get; set; }
         public Mock<IUserRepository> UserRepository { get; set; }
+        public Mock<IDataProtector> DataProtector { get; set; }
 
         public UserController Controller => _controller;
 
@@ -177,7 +180,13 @@ namespace MyFeedlyServer.Tests
             repositoryWrapper.Setup(r => r.User).Returns(UserRepository.Object);
 
             var logger = Fixture.Freeze<Mock<ILoggerManager>>();
-            _controller = new UserControllerMock(logger.Object, repositoryWrapper.Object);
+
+            DataProtector = Fixture.Freeze<Mock<IDataProtector>>();
+
+            var dataProtectionProvider = Fixture.Freeze<Mock<IDataProtectionProvider>>();
+            dataProtectionProvider.Setup(d => d.CreateProtector(It.IsAny<string>())).Returns(DataProtector.Object);
+
+            _controller = new UserControllerMock(logger.Object, repositoryWrapper.Object, dataProtectionProvider.Object);
         }
 
         public void SetAuthorizedUserId(int authorizedUserId)
@@ -193,7 +202,7 @@ namespace MyFeedlyServer.Tests
         {
             private int _authorizedUserId;
 
-            public UserControllerMock(ILoggerManager logger, IRepositoryWrapper repository) : base(logger, repository)
+            public UserControllerMock(ILoggerManager logger, IRepositoryWrapper repository, IDataProtectionProvider dataProtectionProvider) : base(logger, repository, dataProtectionProvider)
             {
             }
 

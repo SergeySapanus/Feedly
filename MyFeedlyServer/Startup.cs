@@ -29,8 +29,10 @@ namespace MyFeedlyServer
             services.ConfigureSyndicationManager();
             services.ConfigureMsSqlContext(Configuration);
             services.ConfigureRepositoryWrapper();
+            services.ConfigureFilterAttributes();
             services.ConfigureAuthentication();
             services.ConfigureSwagger();
+            services.ConfigureDataProtector();
             services.ConfigureMvc();
         }
 

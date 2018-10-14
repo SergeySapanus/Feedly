@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,11 +13,9 @@ using MyFeedlyServer.CustomExceptionMiddleware;
 using MyFeedlyServer.Entities;
 using MyFeedlyServer.Filters;
 using MyFeedlyServer.LoggerService;
-using MyFeedlyServer.Models.Filters.SchemaFilters;
 using MyFeedlyServer.Repository;
 using MyFeedlyServer.SyndicationService;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace MyFeedlyServer.Extensions
@@ -55,7 +54,7 @@ namespace MyFeedlyServer.Extensions
 
         public static void ConfigureSyndicationManager(this IServiceCollection services)
         {
-            services.AddSingleton<ISyndicationManager, SyndicationManager>();
+            services.AddScoped<ISyndicationManager, SyndicationManager>();
         }
 
         public static void ConfigureMsSqlContext(this IServiceCollection services, IConfiguration config)
@@ -67,7 +66,10 @@ namespace MyFeedlyServer.Extensions
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-            services.AddScoped<ISyndicationManager, SyndicationManager>();
+        }
+
+        public static void ConfigureFilterAttributes(this IServiceCollection services)
+        {
             services.AddScoped<ValidationFilterAttribute>();
         }
 
@@ -121,6 +123,11 @@ namespace MyFeedlyServer.Extensions
                 options.SwaggerDoc("v1", new Info { Title = "MyFeedlyServer API", Version = "v1" });
                 options.EnableAnnotations();
             });
+        }
+
+        public static void ConfigureDataProtector(this IServiceCollection services)
+        {
+            services.AddDataProtection();
         }
 
         #endregion services
