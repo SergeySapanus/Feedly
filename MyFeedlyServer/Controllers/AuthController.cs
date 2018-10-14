@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
@@ -8,13 +9,16 @@ using Microsoft.IdentityModel.Tokens;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.Entities.Entities;
-using MyFeedlyServer.Entities.Extensions;
-using MyFeedlyServer.Entities.Models;
 using MyFeedlyServer.Extensions;
+using MyFeedlyServer.Filters;
+using MyFeedlyServer.Models;
+using MyFeedlyServer.Models.Extensions;
 using MyFeedlyServer.Resources;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MyFeedlyServer.Controllers
 {
+    [SwaggerTag("Auth into MyFeedlyServer")]
     [Route("api/auth")]
     public class AuthController : BaseController
     {
@@ -27,25 +31,38 @@ namespace MyFeedlyServer.Controllers
             _repository = repository;
         }
 
+        [SwaggerOperation(
+            Summary = "Login into MyFeedlyServer",
+            Description = "On successful login JWT should has return",
+            OperationId = "Login"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Login is successful", typeof(AuthGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "User hasn't been found in db")]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest, "Invalid model object")]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized. Perhaps password was wrong")]
         [Route("login")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPost]
-        public IActionResult Login([FromBody]UserCreateOrUpdateModel userCreateOrUpdateModel)
+        public IActionResult Login(
+            [FromBody]
+            [SwaggerParameter("User name and Password", Required = true)]
+            UserCreateOrUpdateModel model)
         {
-            if (userCreateOrUpdateModel.IsNull())
+            if (model.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(userCreateOrUpdateModel), string.Empty));
+                _logger.LogError(string.Format(Resource.LogErrorInvalidModel, nameof(model), string.Empty));
                 return BadRequest(Resource.Status400BadRequestInvalidModel);
             }
 
-            var user = new UserCreateOrUpdateModel(_repository.User.GetUserByName(userCreateOrUpdateModel.Name));
+            var user = new UserCreateOrUpdateModel(_repository.User.GetUserByName(model.Name));
             if (user.IsNull())
             {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(userCreateOrUpdateModel.Name), userCreateOrUpdateModel.Name));
+                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(model.Name), model.Name));
                 return NotFound();
             }
 
-            if (userCreateOrUpdateModel.Name == user.Name && userCreateOrUpdateModel.Password == user.Password)
-                return Ok(new { Token = GetToken(user) });
+            if (model.Name == user.Name && model.Password == user.Password)
+                return Ok(new AuthGetModel(GetToken(user)));
 
             return Unauthorized();
         }

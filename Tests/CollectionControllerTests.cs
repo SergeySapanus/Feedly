@@ -11,7 +11,7 @@ using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.Contracts.Repositories.Entities;
 using MyFeedlyServer.Controllers;
 using MyFeedlyServer.Entities.Entities;
-using MyFeedlyServer.Entities.Models;
+using MyFeedlyServer.Models;
 using Xunit;
 
 namespace MyFeedlyServer.Tests
@@ -53,7 +53,6 @@ namespace MyFeedlyServer.Tests
             var collection = _fixture.Fixture.Create<Collection>();
 
             _fixture.SetAuthorizedUserId(collection.UserId);
-            _fixture.UserRepository.Setup(r => r.GetUserById(collection.UserId)).Returns(collection.User).Verifiable();
 
             var model = new CollectionCreateOrUpdateModel(collection);
 
@@ -65,10 +64,9 @@ namespace MyFeedlyServer.Tests
             // assert
             Assert.NotNull(act);
             Assert.Equal((int)HttpStatusCode.Created, act.StatusCode);
-            Assert.Equal(collection.Id, ((EntityModel<Collection>)act.Value).Id);
+            Assert.Equal(collection.Id, ((EntityGetModel)act.Value).Id);
 
             _fixture.CollectionRepository.VerifyAll();
-            _fixture.UserRepository.VerifyAll();
         }
 
         [Theory]
@@ -88,7 +86,7 @@ namespace MyFeedlyServer.Tests
 
             // act
             var act = _fixture.Controller.GetNewsByCollectionId(collection.Id);
-            var actNews = ((IEnumerable<NewsModel>)((ObjectResult)act).Value).ToArray();
+            var actNews = ((IEnumerable<NewsGetModel>)((ObjectResult)act).Value).ToArray();
 
             // assert
             Assert.IsType<OkObjectResult>(act);

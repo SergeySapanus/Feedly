@@ -2,7 +2,7 @@
 using System.Linq;
 using MyFeedlyServer.Entities.Entities;
 
-namespace MyFeedlyServer.Entities.Models
+namespace MyFeedlyServer.Models
 {
     public class UserWithCollectionsGetModel : UserGetModel
     {

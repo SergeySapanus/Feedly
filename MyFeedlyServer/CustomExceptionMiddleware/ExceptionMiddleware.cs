@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MyFeedlyServer.Contracts;
-using MyFeedlyServer.Entities.Models;
+using MyFeedlyServer.Models;
 
 namespace MyFeedlyServer.CustomExceptionMiddleware
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using MyFeedlyServer.Entities.Entities;
 
-namespace MyFeedlyServer.Entities.Models
+namespace MyFeedlyServer.Models
 {
     public class FeedWithNewsGetModel : FeedGetModel
     {
@@ -15,6 +15,6 @@ namespace MyFeedlyServer.Entities.Models
         {
         }
 
-        public IEnumerable<NewsModel> News => Entity.News.Select(n => new NewsModel(n));
+        public IEnumerable<NewsGetModel> News => Entity.News.Select(n => new NewsGetModel(n));
     }
 }

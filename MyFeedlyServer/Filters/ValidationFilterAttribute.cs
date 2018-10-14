@@ -22,9 +22,10 @@ namespace MyFeedlyServer.Filters
             {
                 _logger.LogError(string.Format(Resource.LogErrorInvalidModel, context.Controller, context.ModelState.GetAllErrors()));
                 context.Result = new BadRequestObjectResult(context.ModelState);
+                return;
             }
 
-            if (context.Controller is BaseController controller)
+            if (context.HttpContext.User.Identity.IsAuthenticated && context.Controller is BaseController controller)
             {
                 var autorizedUserId = controller.GetAuthorizedUserId();
                 if (!autorizedUserId.HasValue)

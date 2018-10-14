@@ -11,7 +11,7 @@ using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.Contracts.Repositories.Entities;
 using MyFeedlyServer.Controllers;
 using MyFeedlyServer.Entities.Entities;
-using MyFeedlyServer.Entities.Models;
+using MyFeedlyServer.Models;
 using Xunit;
 
 namespace MyFeedlyServer.Tests
@@ -91,7 +91,7 @@ namespace MyFeedlyServer.Tests
             // assert
             Assert.NotNull(act);
             Assert.Equal((int)HttpStatusCode.Created, act.StatusCode);
-            Assert.Equal(feed.Id, ((EntityModel<Feed>)act.Value).Id);
+            Assert.Equal(feed.Id, ((EntityGetModel)act.Value).Id);
 
             _fixture.CollectionRepository.VerifyAll();
             _fixture.FeedRepository.VerifyAll();
@@ -119,7 +119,7 @@ namespace MyFeedlyServer.Tests
             // assert
             Assert.NotNull(act);
             Assert.Equal((int)HttpStatusCode.Created, act.StatusCode);
-            Assert.Equal(feed.Id, ((EntityModel<Feed>)act.Value).Id);
+            Assert.Equal(feed.Id, ((EntityGetModel)act.Value).Id);
 
             _fixture.CollectionRepository.VerifyAll();
             _fixture.FeedRepository.VerifyAll();

@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFeedlyServer.SyndicationS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFeedlyServer.Tests", "Tests\MyFeedlyServer.Tests.csproj", "{3105B814-A9B8-4705-85A0-CD45F7D5D926}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFeedlyServer.Models", "MyFeedlyServer.Models\MyFeedlyServer.Models.csproj", "{320F0F63-D043-4B28-B5AA-B897CBDE38B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{3105B814-A9B8-4705-85A0-CD45F7D5D926}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3105B814-A9B8-4705-85A0-CD45F7D5D926}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3105B814-A9B8-4705-85A0-CD45F7D5D926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{320F0F63-D043-4B28-B5AA-B897CBDE38B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{320F0F63-D043-4B28-B5AA-B897CBDE38B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{320F0F63-D043-4B28-B5AA-B897CBDE38B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{320F0F63-D043-4B28-B5AA-B897CBDE38B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

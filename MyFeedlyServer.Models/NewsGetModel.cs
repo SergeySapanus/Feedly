@@ -2,16 +2,16 @@
 using System.ComponentModel.DataAnnotations;
 using MyFeedlyServer.Entities.Entities;
 
-namespace MyFeedlyServer.Entities.Models
+namespace MyFeedlyServer.Models
 {
-    public class NewsModel : EntityModel<News>
+    public class NewsGetModel : EntityModel<News>
     {
-        public NewsModel() : base()
+        public NewsGetModel() : base()
         {
             Entity = new News();
         }
 
-        public NewsModel(News news) : base(news)
+        public NewsGetModel(News news) : base(news)
         {
         }
 

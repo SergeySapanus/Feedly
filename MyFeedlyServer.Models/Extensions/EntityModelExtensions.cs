@@ -1,7 +1,6 @@
 ﻿using MyFeedlyServer.Entities.Contracts;
-using MyFeedlyServer.Entities.Models;
 
-namespace MyFeedlyServer.Entities.Extensions
+namespace MyFeedlyServer.Models.Extensions
 {
     public static class EntityModelExtensions
     {

@@ -1,16 +1,19 @@
 ﻿using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
-using MyFeedlyServer.Entities.Entities;
 using MyFeedlyServer.Entities.Extensions;
-using MyFeedlyServer.Entities.Models;
 using MyFeedlyServer.Filters;
+using MyFeedlyServer.Models;
+using MyFeedlyServer.Models.Extensions;
 using MyFeedlyServer.Resources;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MyFeedlyServer.Controllers
 {
+    [SwaggerTag("Add, read Feeds")]
     [Route("api/feed")]
     public class FeedController : BaseController
     {
@@ -23,6 +26,12 @@ namespace MyFeedlyServer.Controllers
             _repository = repository;
         }
 
+        [SwaggerOperation(
+            Summary = "Get all feeds",
+            Description = "Get all feeds",
+            OperationId = "GetAllFeeds"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, "List of feeds", typeof(FeedGetModel))]
         [HttpGet]
         public IActionResult GetAllFeeds()
         {
@@ -32,8 +41,15 @@ namespace MyFeedlyServer.Controllers
             return Ok(feeds);
         }
 
+        [SwaggerOperation(
+            Summary = "Get feed by id",
+            Description = "Get feed by id",
+            OperationId = "GetFeedById"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Info about feed", typeof(FeedGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Feed hasn't been found in db")]
         [HttpGet("{id}", Name = nameof(GetFeedById))]
-        public IActionResult GetFeedById(int id)
+        public IActionResult GetFeedById([SwaggerParameter("Feed identifier", Required = true)]int id)
         {
             var feed = new FeedGetModel(_repository.Feed.GetFeedById(id));
 
@@ -47,6 +63,14 @@ namespace MyFeedlyServer.Controllers
             return Ok(feed);
         }
 
+        [SwaggerOperation(
+            Summary = "Add feed to a collection",
+            Description = "Add feed to a collection",
+            OperationId = "CreateFeed"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.Created, "Feed added successfully", typeof(EntityGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Collection for authorized user hasn't been found in db", typeof(EntityGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpPost]
@@ -58,7 +82,7 @@ namespace MyFeedlyServer.Controllers
             if (collection.IsNull())
             {
                 _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(feedModel.CollectionId), feedModel.CollectionId));
-                return NotFound();
+                return NotFound(new EntityGetModel(feedModel.CollectionId));
             }
 
             var feed = feedModel.GetEntity();
@@ -73,7 +97,7 @@ namespace MyFeedlyServer.Controllers
                 _repository.CollectionFeed.CreateCollectionFeed(collection, feed = feedByHash);
             }
 
-            return CreatedAtRoute(nameof(GetFeedById), new { id = feedModel.Id }, new EntityModel<Feed>(feed));
+            return CreatedAtRoute(nameof(GetFeedById), new { id = feedModel.Id }, new EntityGetModel(feed));
         }
     }
 }

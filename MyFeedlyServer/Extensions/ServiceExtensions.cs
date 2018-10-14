@@ -12,13 +12,19 @@ using MyFeedlyServer.CustomExceptionMiddleware;
 using MyFeedlyServer.Entities;
 using MyFeedlyServer.Filters;
 using MyFeedlyServer.LoggerService;
+using MyFeedlyServer.Models.Filters.SchemaFilters;
 using MyFeedlyServer.Repository;
 using MyFeedlyServer.SyndicationService;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace MyFeedlyServer.Extensions
 {
     public static class ServiceExtensions
     {
+        #region services
+
         internal const string CORS_POLICY = "EnableCORS";
 
         public static void ConfigureCors(this IServiceCollection services)
@@ -70,18 +76,14 @@ namespace MyFeedlyServer.Extensions
             services
                 .AddMvc(options =>
                 {
-                    
+
                 })
                 .AddJsonOptions(options =>
                 {
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.Formatting = Formatting.Indented;
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-        }
-
-        public static void ConfigureCustomExceptionMiddleware(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<ExceptionMiddleware>();
         }
 
         public static void ConfigureAuthentication(this IServiceCollection services)
@@ -102,5 +104,46 @@ namespace MyFeedlyServer.Extensions
                     };
                 });
         }
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("oauth2", new ApiKeyScheme
+                {
+                    Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+                    In = "header",
+                    Name = "Authorization",
+                    Type = "apiKey"
+                });
+                options.OperationFilter<JWTSecurityRequirementsOperationFilter>();
+                //options.SchemaFilter<UserCreateOrUpdateModelSchemaFilter>();
+                options.SwaggerDoc("v1", new Info { Title = "MyFeedlyServer API", Version = "v1" });
+                options.EnableAnnotations();
+            });
+        }
+
+        #endregion services
+
+        #region app
+
+        public static void UseCustomExceptionMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
+        }
+
+        public static void UseCustomSwagger(this IApplicationBuilder app)
+        {
+            app.UseSwagger(options =>
+            {
+                options.RouteTemplate = "/api/docs/{documentName}/swagger.json";
+            });
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/api/docs/v1/swagger.json", "MyFeedlyServer API v1");
+            });
+        }
+
+        #endregion app
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MyFeedlyServer.Entities.Contracts;
+using Newtonsoft.Json;
 
-namespace MyFeedlyServer.Entities.Models
+namespace MyFeedlyServer.Models
 {
     public class EntityModel<T> where T : IEntity
     {
@@ -13,6 +14,7 @@ namespace MyFeedlyServer.Entities.Models
             Entity = entity;
         }
 
+        [JsonIgnore]
         public int Id
         {
             get => Entity.Id;

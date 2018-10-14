@@ -1,16 +1,19 @@
 ﻿using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
-using MyFeedlyServer.Entities.Entities;
 using MyFeedlyServer.Entities.Extensions;
-using MyFeedlyServer.Entities.Models;
 using MyFeedlyServer.Filters;
+using MyFeedlyServer.Models;
+using MyFeedlyServer.Models.Extensions;
 using MyFeedlyServer.Resources;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MyFeedlyServer.Controllers
 {
+    [SwaggerTag("Create, read, update and delete Users")]
     [Route("api/user")]
     public class UserController : BaseController
     {
@@ -23,6 +26,12 @@ namespace MyFeedlyServer.Controllers
             _repository = repository;
         }
 
+        [SwaggerOperation(
+            Summary = "Get all users",
+            Description = "Get all users",
+            OperationId = "GetAllUsers"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, "List of users", typeof(UserGetModel))]
         [HttpGet("all", Name = nameof(GetAllUsers))]
         public IActionResult GetAllUsers()
         {
@@ -32,6 +41,14 @@ namespace MyFeedlyServer.Controllers
             return Ok(users);
         }
 
+        [SwaggerOperation(
+            Summary = "Get authorized user",
+            Description = "Get authorized user",
+            OperationId = "GetUser"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Info about authorized user", typeof(UserGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Authorized user hasn't been found in db")]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpGet]
@@ -50,6 +67,14 @@ namespace MyFeedlyServer.Controllers
             return Ok(user);
         }
 
+        [SwaggerOperation(
+            Summary = "Get authorized user with collections",
+            Description = "Get authorized user with collections",
+            OperationId = "GetUserWithCollections"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Info about authorized user and his collections", typeof(UserWithCollectionsGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Authorized user hasn't been found in db")]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpGet("collection")]
@@ -68,15 +93,29 @@ namespace MyFeedlyServer.Controllers
             return Ok(user);
         }
 
+        [SwaggerOperation(
+            Summary = "Create user",
+            Description = "Create user",
+            OperationId = "CreateUser"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.Created, "User created successfully", typeof(EntityGetModel))]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPost]
         public IActionResult CreateUser([FromBody]UserCreateOrUpdateModel user)
         {
             _repository.User.CreateUser(user.GetEntity());
 
-            return CreatedAtRoute(nameof(GetAllUsers), new { id = user.Id }, new EntityModel<User>(user.GetEntity()));
+            return CreatedAtRoute(nameof(GetAllUsers), new { id = user.Id }, new EntityGetModel(user.GetEntity()));
         }
 
+        [SwaggerOperation(
+            Summary = "Update user",
+            Description = "Update user",
+            OperationId = "UpdateUser"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "User updated successfully")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Authorized user hasn't been found in db")]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpPut]
@@ -96,6 +135,14 @@ namespace MyFeedlyServer.Controllers
             return NoContent();
         }
 
+        [SwaggerOperation(
+            Summary = "Delete user",
+            Description = "Delete user",
+            OperationId = "DeleteUser"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.NoContent, "User deleted successfully")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Authorized user hasn't been found in db")]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized")]
         [Authorize]
         [HttpDelete]
         public IActionResult DeleteUser()

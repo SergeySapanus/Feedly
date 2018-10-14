@@ -1,16 +1,19 @@
 ﻿using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
-using MyFeedlyServer.Entities.Entities;
 using MyFeedlyServer.Entities.Extensions;
-using MyFeedlyServer.Entities.Models;
 using MyFeedlyServer.Filters;
+using MyFeedlyServer.Models;
+using MyFeedlyServer.Models.Extensions;
 using MyFeedlyServer.Resources;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MyFeedlyServer.Controllers
 {
+    [SwaggerTag("Create, read Collections")]
     [Route("api/collection")]
     public class CollectionController : BaseController
     {
@@ -25,10 +28,17 @@ namespace MyFeedlyServer.Controllers
             _syndicationManager = syndicationManager;
         }
 
+        [SwaggerOperation(
+            Summary = "Get collection by id",
+            Description = "Get collection by id",
+            OperationId = "GetCollectionById"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, "Info about collection", typeof(CollectionGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Collection for authorized user hasn't been found in db")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpGet("{id}", Name = nameof(GetCollectionById))]
-        public IActionResult GetCollectionById(int id)
+        public IActionResult GetCollectionById([SwaggerParameter("Collection identifier", Required = true)]int id)
         {
             var autorizedUserId = AuthorizedUserId;
 
@@ -43,10 +53,17 @@ namespace MyFeedlyServer.Controllers
             return Ok(collection);
         }
 
+        [SwaggerOperation(
+            Summary = "Get all news for a collection",
+            Description = "Get all news for a collection",
+            OperationId = "GetNewsByCollectionId"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, "List collection news", typeof(NewsGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Collection for authorized user hasn't been found in db")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpGet("{id}/news", Name = nameof(GetNewsByCollectionId))]
-        public IActionResult GetNewsByCollectionId(int id)
+        public IActionResult GetNewsByCollectionId([SwaggerParameter("Collection identifier", Required = true)]int id)
         {
             var autorizedUserId = AuthorizedUserId;
 
@@ -57,12 +74,20 @@ namespace MyFeedlyServer.Controllers
                 return NotFound();
             }
 
-            var result = _repository.Feed.GetNewsByCollection(collection, _syndicationManager).Select(f => new NewsModel(f));
+            var result = _repository.Feed.GetNewsByCollection(collection, _syndicationManager).Select(f => new NewsGetModel(f));
 
             _logger.LogInfo(string.Format(Resource.LogInfoGetById, nameof(collection), id));
             return Ok(result);
         }
 
+        [SwaggerOperation(
+            Summary = "Create collection",
+            Description = "Create collection",
+            OperationId = "CreateCollection"
+        )]
+        [SwaggerResponse((int)HttpStatusCode.Created, "Create created successfully", typeof(EntityGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Collection for authorized user hasn't been found in db")]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
         [HttpPost]
@@ -71,19 +96,12 @@ namespace MyFeedlyServer.Controllers
             if (!AuthorizedUserId.Equals(collection.UserId))
             {
                 _logger.LogError(Resource.LogErrorUserIsNotAutorized);
-                return Unauthorized();
-            }
-
-            var user = _repository.User.GetUserById(collection.UserId);
-            if (user.IsNull())
-            {
-                _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(user), nameof(collection.UserId), collection.UserId));
                 return NotFound();
             }
 
             _repository.Collection.CreateCollection(collection.GetEntity());
 
-            return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityModel<Collection>(collection.GetEntity()));
+            return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityGetModel(collection.GetEntity()));
         }
     }
 }

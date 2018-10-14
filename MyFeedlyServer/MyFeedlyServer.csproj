@@ -2,15 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <UserSecretsId>e2bdf96f-cc33-4f14-b027-9f8426a614e9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Documentation\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.0-preview2-35157" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +24,7 @@
     <ProjectReference Include="..\Contracts\MyFeedlyServer.Contracts.csproj" />
     <ProjectReference Include="..\Entities\MyFeedlyServer.Entities.csproj" />
     <ProjectReference Include="..\LoggerService\MyFeedlyServer.LoggerService.csproj" />
+    <ProjectReference Include="..\MyFeedlyServer.Models\MyFeedlyServer.Models.csproj" />
     <ProjectReference Include="..\Repository\MyFeedlyServer.Repository.csproj" />
     <ProjectReference Include="..\SyndicationService\MyFeedlyServer.SyndicationService.csproj" />
   </ItemGroup>

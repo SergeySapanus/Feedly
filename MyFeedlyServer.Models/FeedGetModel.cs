@@ -1,6 +1,6 @@
 ﻿using MyFeedlyServer.Entities.Entities;
 
-namespace MyFeedlyServer.Entities.Models
+namespace MyFeedlyServer.Models
 {
     public class FeedGetModel : EntityModel<Feed>
     {

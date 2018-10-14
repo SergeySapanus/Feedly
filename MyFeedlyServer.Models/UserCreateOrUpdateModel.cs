@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MyFeedlyServer.Entities.Entities;
+using MyFeedlyServer.Models.Filters.SchemaFilters;
+using Swashbuckle.AspNetCore.Annotations;
 
-namespace MyFeedlyServer.Entities.Models
+namespace MyFeedlyServer.Models
 {
+    [SwaggerSchemaFilter(typeof(UserCreateOrUpdateModelSchemaFilter))]
     public class UserCreateOrUpdateModel : EntityModel<User>
     {
         public UserCreateOrUpdateModel() : base()

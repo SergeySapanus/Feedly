@@ -10,8 +10,7 @@ using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.Contracts.Repositories.Entities;
 using MyFeedlyServer.Controllers;
 using MyFeedlyServer.Entities.Entities;
-using MyFeedlyServer.Entities.Models;
-using MyFeedlyServer.Tests.Extensions;
+using MyFeedlyServer.Models;
 using Xunit;
 
 namespace MyFeedlyServer.Tests
@@ -95,7 +94,7 @@ namespace MyFeedlyServer.Tests
             // assert
             Assert.IsType<OkObjectResult>(act);
             Assert.Equal((int)HttpStatusCode.OK, ((OkObjectResult)act).StatusCode);
-            Assert.NotNull(((OkObjectResult)act).Value.ConvertToDynamicByJsonConvert()?.Token);
+            Assert.NotNull(((AuthGetModel)((OkObjectResult)act).Value).Token);
 
             _fixture.UserRepository.VerifyAll();
         }

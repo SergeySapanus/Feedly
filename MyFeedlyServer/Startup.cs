@@ -30,6 +30,7 @@ namespace MyFeedlyServer
             services.ConfigureMsSqlContext(Configuration);
             services.ConfigureRepositoryWrapper();
             services.ConfigureAuthentication();
+            services.ConfigureSwagger();
             services.ConfigureMvc();
         }
 
@@ -48,8 +49,9 @@ namespace MyFeedlyServer
             });
 
             app.UseStaticFiles();
-            app.ConfigureCustomExceptionMiddleware();
+            app.UseCustomExceptionMiddleware();
             app.UseAuthentication();
+            app.UseCustomSwagger();
             app.UseMvc();
         }
     }

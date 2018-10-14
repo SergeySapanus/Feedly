@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Entities\MyFeedlyServer.Entities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\10.0.1\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Swashbuckle.AspNetCore.Annotations">
+      <HintPath>..\..\..\..\.nuget\packages\swashbuckle.aspnetcore.annotations\3.0.0\lib\netstandard1.6\Swashbuckle.AspNetCore.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Swashbuckle.AspNetCore.Swagger">
+      <HintPath>..\..\..\..\.nuget\packages\swashbuckle.aspnetcore.swagger\3.0.0\lib\netstandard1.6\Swashbuckle.AspNetCore.Swagger.dll</HintPath>
+    </Reference>
+    <Reference Include="Swashbuckle.AspNetCore.SwaggerGen">
+      <HintPath>..\..\..\..\.nuget\packages\swashbuckle.aspnetcore.swaggergen\3.0.0\lib\netstandard1.6\Swashbuckle.AspNetCore.SwaggerGen.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
