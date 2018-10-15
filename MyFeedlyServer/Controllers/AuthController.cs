@@ -65,7 +65,7 @@ namespace MyFeedlyServer.Controllers
             }
 
             if (model.Name == user.Name && model.Password == _dataProtector.Unprotect(user.Password))
-                return Ok(new AuthGetModel(GetToken(user)));
+                return Ok(new AuthGetModel(GetToken(user), user.Id));
 
             return Unauthorized();
         }

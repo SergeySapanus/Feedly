@@ -2,7 +2,7 @@
 
 namespace MyFeedlyServer.Models
 {
-    public class UserGetModel : EntityModel<User>
+    public class UserGetModel : EntityGetModel<User>
     {
         public UserGetModel() : base()
         {

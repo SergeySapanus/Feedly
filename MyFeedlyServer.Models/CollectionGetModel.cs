@@ -4,7 +4,7 @@ using MyFeedlyServer.Entities.Entities;
 
 namespace MyFeedlyServer.Models
 {
-    public class CollectionGetModel : EntityModel<Collection>
+    public class CollectionGetModel : EntityGetModel<Collection>
     {
         public CollectionGetModel() : base()
         {

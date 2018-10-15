@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
+using MyFeedlyServer.Entities.Contracts;
 using MyFeedlyServer.Entities.Extensions;
 using MyFeedlyServer.Filters;
 using MyFeedlyServer.Models;
@@ -68,8 +69,8 @@ namespace MyFeedlyServer.Controllers
             Description = "Add feed to a collection",
             OperationId = "CreateFeed"
         )]
-        [SwaggerResponse((int)HttpStatusCode.Created, "Feed added successfully", typeof(EntityGetModel))]
-        [SwaggerResponse((int)HttpStatusCode.NotFound, "Collection for authorized user hasn't been found in db", typeof(EntityGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.Created, "Feed added successfully", typeof(EntityGetModel<IEntity>))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Collection for authorized user hasn't been found in db", typeof(EntityGetModel<IEntity>))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize]
@@ -82,7 +83,7 @@ namespace MyFeedlyServer.Controllers
             if (collection.IsNull())
             {
                 _logger.LogError(string.Format(Resource.LogErrorGetByIsNull, nameof(collection), nameof(feedModel.CollectionId), feedModel.CollectionId));
-                return NotFound(new EntityGetModel(feedModel.CollectionId));
+                return NotFound(new EntityGetModel<IEntity>(feedModel.CollectionId));
             }
 
             var feed = feedModel.GetEntity();
@@ -97,7 +98,7 @@ namespace MyFeedlyServer.Controllers
                 _repository.CollectionFeed.CreateCollectionFeed(collection, feed = feedByHash);
             }
 
-            return CreatedAtRoute(nameof(GetFeedById), new { id = feedModel.Id }, new EntityGetModel(feed));
+            return CreatedAtRoute(nameof(GetFeedById), new { id = feedModel.Id }, new EntityGetModel<IEntity>(feed));
         }
     }
 }

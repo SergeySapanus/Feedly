@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
+using MyFeedlyServer.Entities.Contracts;
 using MyFeedlyServer.Entities.Extensions;
 using MyFeedlyServer.Filters;
 using MyFeedlyServer.Models;
@@ -85,7 +86,7 @@ namespace MyFeedlyServer.Controllers
             Description = "Create collection",
             OperationId = "CreateCollection"
         )]
-        [SwaggerResponse((int)HttpStatusCode.Created, "Create created successfully", typeof(EntityGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.Created, "Create created successfully", typeof(EntityGetModel<IEntity>))]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Collection for authorized user hasn't been found in db")]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "User hasn't been authorized")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
@@ -101,7 +102,7 @@ namespace MyFeedlyServer.Controllers
 
             _repository.Collection.CreateCollection(collection.GetEntity());
 
-            return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityGetModel(collection.GetEntity()));
+            return CreatedAtRoute(nameof(GetCollectionById), new { id = collection.Id }, new EntityGetModel<IEntity>(collection.GetEntity()));
         }
     }
 }

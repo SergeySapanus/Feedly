@@ -2,7 +2,7 @@
 
 namespace MyFeedlyServer.Models
 {
-    public class FeedGetModel : EntityModel<Feed>
+    public class FeedGetModel : EntityGetModel<Feed>
     {
         public FeedGetModel() : base()
         {

@@ -13,6 +13,7 @@ using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
 using MyFeedlyServer.Contracts.Repositories.Entities;
 using MyFeedlyServer.Controllers;
+using MyFeedlyServer.Entities.Contracts;
 using MyFeedlyServer.Entities.Entities;
 using MyFeedlyServer.Models;
 using Xunit;
@@ -112,8 +113,8 @@ namespace MyFeedlyServer.Tests
             // assert
             Assert.NotNull(act);
             Assert.Equal((int)HttpStatusCode.Created, act.StatusCode);
-            Assert.Equal(expectedId, ((EntityGetModel)act.Value).Id);
-            Assert.Equal(expectedProtectedPassword, ((User)((EntityGetModel)act.Value).GetEntity()).Password);
+            Assert.Equal(expectedId, ((EntityGetModel<IEntity>)act.Value).Id);
+            Assert.Equal(expectedProtectedPassword, ((User)((EntityGetModel<IEntity>)act.Value).GetEntity()).Password);
 
             _fixture.UserRepository.VerifyAll();
             _fixture.DataProtector.VerifyAll();

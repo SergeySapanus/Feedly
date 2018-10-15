@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
+using MyFeedlyServer.Entities.Contracts;
 using MyFeedlyServer.Entities.Extensions;
 using MyFeedlyServer.Filters;
 using MyFeedlyServer.Models;
@@ -101,7 +102,7 @@ namespace MyFeedlyServer.Controllers
             Description = "Create user",
             OperationId = "CreateUser"
         )]
-        [SwaggerResponse((int)HttpStatusCode.Created, "User created successfully", typeof(EntityGetModel))]
+        [SwaggerResponse((int)HttpStatusCode.Created, "User created successfully", typeof(EntityGetModel<IEntity>))]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPost]
         public IActionResult CreateUser([FromBody]UserCreateOrUpdateModel user)
@@ -111,7 +112,7 @@ namespace MyFeedlyServer.Controllers
 
             _repository.User.CreateUser(entity);
 
-            return CreatedAtRoute(nameof(GetAllUsers), new { id = user.Id }, new EntityGetModel(entity));
+            return CreatedAtRoute(nameof(GetAllUsers), new { id = user.Id }, new EntityGetModel<IEntity>(entity));
         }
 
         [SwaggerOperation(
