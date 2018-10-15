@@ -7,6 +7,7 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Moq;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
@@ -90,13 +91,18 @@ namespace MyFeedlyServer.Tests
         }
 
         [Fact]
-        public void CreateUser_WithValidModel_ShouldCreatedAtRouteResult()
+        public void CreateUser_WithValidModel_ShouldCreatedWithProtectedPassword()
         {
             // arrange
+            var expectedProtectedPassword = _fixture.Fixture.Create<string>();
             var expectedId = _fixture.Fixture.Create<int>();
             var user = _fixture.Fixture.Create<User>();
 
+            var utf8Encoding = new UTF8Encoding(false, true).GetBytes(user.Password);
+            var protectedData = WebEncoders.Base64UrlDecode(expectedProtectedPassword);
+
             _fixture.UserRepository.Setup(r => r.CreateUser(user)).Callback(() => user.Id = expectedId).Verifiable();
+            _fixture.DataProtector.Setup(d => d.Protect(utf8Encoding)).Returns(protectedData).Verifiable();
 
             var model = new UserCreateOrUpdateModel(user);
 
@@ -107,21 +113,28 @@ namespace MyFeedlyServer.Tests
             Assert.NotNull(act);
             Assert.Equal((int)HttpStatusCode.Created, act.StatusCode);
             Assert.Equal(expectedId, ((EntityGetModel)act.Value).Id);
+            Assert.Equal(expectedProtectedPassword, ((User)((EntityGetModel)act.Value).GetEntity()).Password);
 
             _fixture.UserRepository.VerifyAll();
+            _fixture.DataProtector.VerifyAll();
         }
 
         [Fact]
-        public void UpdateUser_WithValidModelAndAuthorizedUser_ShouldNoContentResult()
+        public void UpdateUser_WithValidModelAndAuthorizedUser_ShouldUpdatedWithProtectedPassword()
         {
             // arrange
+            var expectedProtectedPassword = _fixture.Fixture.Create<string>();
             var user = _fixture.Fixture.Create<User>();
             var dbUser = _fixture.Fixture.Create<User>();
+
+            var utf8Encoding = new UTF8Encoding(false, true).GetBytes(user.Password);
+            var protectedData = WebEncoders.Base64UrlDecode(expectedProtectedPassword);
 
             _fixture.SetAuthorizedUserId(user.Id);
 
             _fixture.UserRepository.Setup(r => r.GetUserById(user.Id)).Returns(dbUser).Verifiable();
-            _fixture.UserRepository.Setup(r => r.UpdateUser(dbUser, user)).Verifiable();
+            _fixture.UserRepository.Setup(r => r.UpdateUser(dbUser, user)).Callback(() => dbUser.Password = user.Password).Verifiable();
+            _fixture.DataProtector.Setup(d => d.Protect(utf8Encoding)).Returns(protectedData).Verifiable();
 
             var model = new UserCreateOrUpdateModel(user);
 
@@ -131,8 +144,10 @@ namespace MyFeedlyServer.Tests
             // assert
             Assert.NotNull(act);
             Assert.Equal((int)HttpStatusCode.NoContent, act.StatusCode);
+            Assert.Equal(expectedProtectedPassword, dbUser.Password);
 
             _fixture.UserRepository.VerifyAll();
+            _fixture.DataProtector.VerifyAll();
         }
 
         [Fact]

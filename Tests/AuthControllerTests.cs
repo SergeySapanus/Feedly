@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Text;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Moq;
 using MyFeedlyServer.Contracts;
 using MyFeedlyServer.Contracts.Repositories;
@@ -59,7 +61,7 @@ namespace MyFeedlyServer.Tests
         }
 
         [Fact]
-        public void Login_WithInvalidCredentials_ShouldUnauthorizedResult()
+        public void Login_WithInvalidUserName_ShouldUnauthorizedResult()
         {
             // arrange
             var user = _fixture.Fixture.Create<User>();
@@ -80,13 +82,42 @@ namespace MyFeedlyServer.Tests
         }
 
         [Fact]
+        public void Login_WithInvalidPassword_ShouldUnauthorizedResult()
+        {
+            // arrange
+            var user = _fixture.Fixture.Create<User>();
+            var invalidUser = _fixture.Fixture.Create<User>();
+
+            var protectedData = WebEncoders.Base64UrlDecode(user.Password);
+            var utf8Encoding = new UTF8Encoding(false, true).GetBytes(invalidUser.Password);
+
+            _fixture.UserRepository.Setup(r => r.GetUserByName(user.Name)).Returns(user).Verifiable();
+            _fixture.DataProtector.Setup(d=>d.Unprotect(protectedData)).Returns(utf8Encoding).Verifiable();
+
+            var model = new UserCreateOrUpdateModel(user);
+
+            // act
+            var act = _fixture.Controller.Login(model);
+
+            // assert
+            Assert.IsType<UnauthorizedResult>(act);
+            Assert.Equal((int)HttpStatusCode.Unauthorized, ((UnauthorizedResult)act).StatusCode);
+
+            _fixture.UserRepository.VerifyAll();
+            _fixture.DataProtector.VerifyAll();
+        }
+
+        [Fact]
         public void Login_WithValidCredentials_ShouldOkResult()
         {
             // arrange
             var user = _fixture.Fixture.Create<User>();
-            user.Password = string.Empty;
+
+            var protectedData = WebEncoders.Base64UrlDecode(user.Password);
+            var utf8Encoding = new UTF8Encoding(false, true).GetBytes(user.Password);
 
             _fixture.UserRepository.Setup(r => r.GetUserByName(user.Name)).Returns(user).Verifiable();
+            _fixture.DataProtector.Setup(d => d.Unprotect(protectedData)).Returns(utf8Encoding).Verifiable();
 
             var model = new UserCreateOrUpdateModel(user);
 
@@ -99,6 +130,7 @@ namespace MyFeedlyServer.Tests
             Assert.NotNull(((AuthGetModel)((OkObjectResult)act).Value).Token);
 
             _fixture.UserRepository.VerifyAll();
+            _fixture.DataProtector.VerifyAll();
         }
     }
 
